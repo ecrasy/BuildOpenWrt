@@ -1,0 +1,27 @@
+#!/bin/bash
+
+[ "$ACTION" = ifup ] || exit 0
+[ "$INTERFACE" = wan ] || exit 0
+
+sleep 8s
+
+prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
+
+ula_prefix=""
+
+for prefix in $prefixs
+do
+	ula_prefix=$prefix
+done
+
+# uci set network.globals.ula_prefix="$ula_prefix"
+# uci commit network
+# /sbin/ifup lan
+
+echo $ula_prefix
+
+model="Default string Default string/Default string - "
+replace=""
+command=s@$model@$replace@
+sed -i "$command" /tmp/sysinfo/model
+
