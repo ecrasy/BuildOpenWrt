@@ -2,7 +2,7 @@
  # File Name: x86_64_test.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-09-24 14:34:57 CST
+ # Modified Time: 2022-09-25 09:07:23 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -123,6 +123,8 @@ jobs:
           export TOOLCHAIN_IMAGE="toolchain-$SOURCE_OWNER-$SOURCE_REPO-$SOURCE_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
           echo "::set-output name=TOOLCHAIN_IMAGE::$(echo $TOOLCHAIN_IMAGE)"
+          export BUILD_DATE=$(date +"%Y-%m-%d")
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
 
       - name: Compare Toolchain Hash
         id: hash
