@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-09-25 20:02:43 CST
+ # Modified Time: 2022-09-25 23:51:10 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -57,7 +57,6 @@ jobs:
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
       CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
-      CURRENT_COMMIT: ${{ steps.env.outputs.CURRENT_COMMIT }}
       SOURCE_OWNER: ${{ steps.env.outputs.SOURCE_OWNER }}
       SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
       DEVICE_PLATFORM: ${{ steps.env.outputs.DEVICE_PLATFORM }}
@@ -106,9 +105,6 @@ jobs:
           export CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
           echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
           echo "::set-output name=CURRENT_BRANCH::$(echo $CURRENT_BRANCH)"
-          export CURRENT_COMMIT="$(git rev-parse --short HEAD)"
-          echo "CURRENT_COMMIT=$CURRENT_COMMIT" >> $GITHUB_ENV
-          echo "::set-output name=CURRENT_COMMIT::$(echo $CURRENT_COMMIT)"
           cd $OPENWRT_ROOT_PATH
           export SOURCE_OWNER="$(echo $SOURCE_URL | awk -F '/' '{print $(NF-1)}')"
           echo "SOURCE_OWNER=$SOURCE_OWNER" >> $GITHUB_ENV
@@ -189,6 +185,15 @@ jobs:
           fail-if-no-assets: false
           fail-if-no-release: false
 
+      - name: Delete Toolchain Image From Release
+        if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true 
+          tag_name: ${{ env.TOOLCHAIN_TAG }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         uses: ncipollo/release-action@v1.10.0
@@ -198,7 +203,7 @@ jobs:
           replacesArtifacts: true
           tag: ${{ env.TOOLCHAIN_TAG }}
           body: toolchain for RaspberryPi 4B built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_COMMIT }}
+          commit: ${{ env.CURRENT_BRANCH }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: output/*
 
@@ -210,7 +215,6 @@ jobs:
       - name: Restore Variables
         run: |
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
           echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
@@ -437,7 +441,6 @@ jobs:
       - name: Restore Variables
         run: |
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
           echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
@@ -485,16 +488,25 @@ jobs:
           fail-if-no-release: false
           assets: "*"
 
-      - name: Deploy Files To Release
-        uses: ncipollo/release-action@v1.10.0
+      - name: Delete Files From Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true 
+          tag_name: ${{ env.IMAGE_TAG }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy Files To Release
+        if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
+        uses: ncipollo/release-action@v1.10.0
         with:
           name: RaspberryPi 4B with Kmod
           allowUpdates: true
           replacesArtifacts: true
           tag: ${{ env.IMAGE_TAG }}
           body: Firmware for RaspberryPi 4B with kmod built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_COMMIT }}
+          commit: ${{ env.CURRENT_BRANCH }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ${{ env.OPENWRT_ROOT_PATH }}/bin/targets/${{ env.DEVICE_TARGET }}/${{ env.DEVICE_SUBTARGET }}/*
 
