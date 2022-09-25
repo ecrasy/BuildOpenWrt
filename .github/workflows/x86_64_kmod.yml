@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-09-25 09:06:17 CST
+ # Modified Time: 2022-09-25 19:51:00 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -57,6 +57,7 @@ jobs:
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
       CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
+      CURRENT_COMMIT: ${{ steps.env.outputs.CURRENT_COMMIT }}
       SOURCE_OWNER: ${{ steps.env.outputs.SOURCE_OWNER }}
       SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
       DEVICE_PLATFORM: ${{ steps.env.outputs.DEVICE_PLATFORM }}
@@ -105,6 +106,9 @@ jobs:
           export CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
           echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
           echo "::set-output name=CURRENT_BRANCH::$(echo $CURRENT_BRANCH)"
+          export CURRENT_COMMIT="$(git rev-parse --short HEAD)"
+          echo "CURRENT_COMMIT=$CURRENT_COMMIT" >> $GITHUB_ENV
+          echo "::set-output name=CURRENT_COMMIT::$(echo $CURRENT_COMMIT)"
           cd $OPENWRT_ROOT_PATH
           export SOURCE_OWNER="$(echo $SOURCE_URL | awk -F '/' '{print $(NF-1)}')"
           echo "SOURCE_OWNER=$SOURCE_OWNER" >> $GITHUB_ENV
@@ -146,14 +150,14 @@ jobs:
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) thread compile"
+          echo -e "$(nproc) threads compile tools"
           make tools/compile -j$(nproc) || make tools/compile -j1 V=s
 
       - name: Compile Toolchain
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) thread compile"
+          echo -e "$(nproc) threads compile toolchain"
           make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
           rm -rf .config* dl bin
 
@@ -194,7 +198,7 @@ jobs:
           replacesArtifacts: true
           tag: ${{ env.TOOLCHAIN_TAG }}
           body: toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_BRANCH }}
+          commit: ${{ env.CURRENT_COMMIT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: output/*
 
@@ -206,6 +210,7 @@ jobs:
       - name: Restore Variables
         run: |
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
+          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
           echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
@@ -251,7 +256,7 @@ jobs:
           sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
           sudo chown -R runner:runner $GITHUB_WORKSPACE
           mkdir $GITHUB_WORKSPACE/tmp
-          chmod 777 $GITHUB_WORKSPACE/tmp
+          chmod 0777 $GITHUB_WORKSPACE/tmp
           sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
           sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
           df -hT $GITHUB_WORKSPACE
@@ -330,7 +335,7 @@ jobs:
           ./$DIY_SH
           make defconfig
 
-      - name: Free UP Disk Space
+      - name: Free Up Disk Space
         if: env.FREE_UP_DISK == 'true'
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -342,7 +347,7 @@ jobs:
           docker image prune -a -f
           df -h
 
-      - name: Download DL Package
+      - name: Download Packages
         id: download
         run: |
           cd $OPENWRT_ROOT_PATH
@@ -352,7 +357,7 @@ jobs:
       - name: Compile Packages
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) thread compile"
+          echo -e "$(nproc) threads compile packages"
           make buildinfo
           make diffconfig buildversion feedsversion
           make target/compile -j$(nproc) IGNORE_ERRORS="m n" BUILD_LOG=1 || \
@@ -431,6 +436,7 @@ jobs:
       - name: Restore Variables
         run: |
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
+          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
           echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
@@ -486,8 +492,8 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           tag: ${{ env.IMAGE_TAG }}
-          body: firmware for x86_64 with kmod built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_BRANCH }}
+          body: Firmware for x86_64 with kmod built @ ${{ env.BUILD_DATE }}
+          commit: ${{ env.CURRENT_COMMIT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ${{ env.OPENWRT_ROOT_PATH }}/bin/targets/${{ env.DEVICE_TARGET }}/${{ env.DEVICE_SUBTARGET }}/*
 
