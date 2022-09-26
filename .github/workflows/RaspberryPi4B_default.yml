@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-09-26 08:13:14 CST
+ # Modified Time: 2022-09-26 08:26:25 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -140,7 +140,6 @@ jobs:
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
             echo "::set-output name=REBUILD_TOOLCHAIN::true"
           fi
-
 
       - name: Compile Tools
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
@@ -444,7 +443,6 @@ jobs:
           cd $OPENWRT_ROOT_PATH/bin/targets/$DEVICE_TARGET/$DEVICE_SUBTARGET
           rm -rf packages
           df -hT $PWD
-
 
       - name: Delete Files From Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'

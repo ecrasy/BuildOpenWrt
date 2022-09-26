@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-09-26 08:18:32 CST
+ # Modified Time: 2022-09-26 08:28:25 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -140,7 +140,6 @@ jobs:
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
             echo "::set-output name=REBUILD_TOOLCHAIN::true"
           fi
-
 
       - name: Compile Tools
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
