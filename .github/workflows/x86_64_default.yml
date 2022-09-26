@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-09-26 02:32:07 UTC
+ # Modified Time: 2022-09-26 05:04:51 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -43,7 +43,8 @@ env:
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
   IMAGE_TAG: x86_64
-  TOOLCHAIN_TAG: toolchain
+  TOOLCHAIN_TAG: toolchain-x86_64
+  TOOLCHAIN_NAME: toolchain-image-x86_64
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
@@ -187,7 +188,7 @@ jobs:
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         uses: ncipollo/release-action@v1.10.0
         with:
-          name: toolchain-image
+          name: ${{ env.TOOLCHAIN_NAME }}
           allowUpdates: true
           replacesArtifacts: true
           tag: ${{ env.TOOLCHAIN_TAG }}
