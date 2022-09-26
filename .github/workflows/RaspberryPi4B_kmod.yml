@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-09-25 23:51:10 CST
+ # Modified Time: 2022-09-26 08:17:19 CST
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -174,16 +174,6 @@ jobs:
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: output
-
-      - name: Delete Old Toolchain Assets From Release
-        if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: mknejp/delete-release-assets@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.TOOLCHAIN_TAG }}
-          assets: "toolchain-${{ env.TOOLCHAIN_IMAGE }}.*"
-          fail-if-no-assets: false
-          fail-if-no-release: false
 
       - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
@@ -477,16 +467,6 @@ jobs:
           rm -rf packages
           df -hT $PWD
 
-
-      - name: Delete Old Firmware Assets
-        if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: mknejp/delete-release-assets@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.IMAGE_TAG }}
-          fail-if-no-assets: false
-          fail-if-no-release: false
-          assets: "*"
 
       - name: Delete Files From Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
