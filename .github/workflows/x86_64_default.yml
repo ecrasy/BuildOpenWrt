@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-09-26 01:37:49 UTC
+ # Modified Time: 2022-09-26 02:32:07 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -80,7 +80,7 @@ jobs:
           mkdir -p workspace
 
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v3
 
       - name: Clone Source Code
         id: clone
@@ -169,7 +169,7 @@ jobs:
 
       - name: Upload Toolchain Image To Artifact
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: output
@@ -265,7 +265,7 @@ jobs:
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: workspace
@@ -391,7 +391,7 @@ jobs:
           echo '-----'
 
       - name: Upload Bin Archive
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}/${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}.zip
@@ -402,7 +402,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v3
 
       - name: Restore Variables
         run: |
@@ -425,7 +425,7 @@ jobs:
           git config --global init.defaultBranch main
 
       - name: Download Bin Archive
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}
