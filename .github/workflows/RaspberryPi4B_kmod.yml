@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-09-27 08:55:10 UTC
+ # Modified Time: 2022-09-27 09:05:29 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -30,7 +30,7 @@ name: Build RaspberryPi4B With Local Kmod
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * SUN'
+    - cron: '0 18 * * SUN'
   #watch:
   # types: [started]
 
