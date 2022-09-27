@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: ecras_y@163.com
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-09-27 08:44:19 UTC
+ # Modified Time: 2022-09-27 08:54:05 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -28,12 +28,11 @@
 name: Build x86_64
 
 on:
-  repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * SUN'
-  # watch:
-  #   types: started
+    - cron: '0 0 * * SUN'
+  #watch:
+  # types: [started]
 
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
