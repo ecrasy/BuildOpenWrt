@@ -20,7 +20,7 @@ ula_prefix=""
 echo $ula_prefix > /tmp/_ula_prefix
 for prefix in $prefixs
 do
-	ula_prefix=$prefix
+    ula_prefix=$prefix
     echo $ula_prefix >> /tmp/_ula_prefix
 done
 
