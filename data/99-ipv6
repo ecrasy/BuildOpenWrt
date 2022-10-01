@@ -3,7 +3,7 @@
 # Author: Carbon (ecras_y@163.com)
 # Description: feel free to use
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-10-01 11:08:08 UTC
+# Modified Time: 2022-10-01 12:49:02 UTC
 #########################################################################
 
 
@@ -12,15 +12,16 @@
 [ "$ACTION" = ifup ] || exit 0
 [ "$INTERFACE" = wan ] || exit 0
 
-sleep 8s
+sleep 5s
 
 prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
-
 ula_prefix=""
 
+echo $ula_prefix > /tmp/_ula_prefix
 for prefix in $prefixs
 do
 	ula_prefix=$prefix
+    echo $ula_prefix >> /tmp/_ula_prefix
 done
 
 # uci set network.globals.ula_prefix="$ula_prefix"
