@@ -3,7 +3,7 @@
 # Author: Carbon (ecras_y@163.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-09-26 01:36:31 UTC
+# Modified Time: 2022-10-01 10:49:16 UTC
 #########################################################################
 
 
@@ -21,6 +21,10 @@
 # 修正lua-eco的递归依赖错误
 # sed -i 's/ +PACKAGE_libwolfssl:libwolfssl//g' feeds/packages/lang/lua-eco/Makefile
 # echo "Fixing lua-eco config error!!!"
+
+# 修正qtbase的hash错误
+sed -i '/official_releases/d' package/feeds/packages/qtbase/Makefile
+echo "Fixing qtbase hash error!!!"
 
 # 删除冗余的包
 rm -rf feeds/CustomPkgs/adguardhome
