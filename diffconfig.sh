@@ -1,9 +1,9 @@
 #########################################################################
 # File Name: diffconfig.sh
-# Author: Carbon (ecras_y@163.com)
+# Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-26 10:58:29 UTC
-# Modified Time: 2022-09-26 01:35:35 UTC
+# Modified Time: 2022-10-01 12:57:11 UTC
 #########################################################################
 
 

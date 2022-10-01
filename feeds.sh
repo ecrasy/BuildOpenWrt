@@ -1,9 +1,9 @@
 #########################################################################
 # File Name: feeds.sh
-# Author: Carbon (ecras_y@163.com)
+# Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2022-08-21 10:33:37 UTC
+# Modified Time: 2022-10-01 12:57:29 UTC
 #########################################################################
 
 #!/bin/bash
