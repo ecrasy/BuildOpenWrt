@@ -3,7 +3,7 @@
 # Author: Carbon (ecras_y@163.com)
 # Description: feel free to use
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-09-26 01:39:15 UTC
+# Modified Time: 2022-10-01 11:05:49 UTC
 #########################################################################
 
 
@@ -29,8 +29,8 @@ done
 
 echo $ula_prefix
 
-model="Default string Default string/Default string - "
-replace=""
-command=s@$model@$replace@
-sed -i "$command" /tmp/sysinfo/model
+str="Default string Default string/Default string - "
+rpl=""
+cmd=s@$str@$rpl@
+sed -i "$cmd" /tmp/sysinfo/model
 
