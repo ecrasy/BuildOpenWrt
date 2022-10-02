@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-01 12:57:36 UTC
+# Modified Time: 2022-10-02 01:20:05 UTC
 #########################################################################
 
 
@@ -23,8 +23,8 @@
 # echo "Fixing lua-eco config error!!!"
 
 # 修正qtbase的hash错误
-sed -i '/official_releases/d' package/feeds/packages/qtbase/Makefile
-echo "Fixing qtbase hash error!!!"
+# sed -i '/official_releases/d' package/feeds/packages/qtbase/Makefile
+# echo "Fixing qtbase hash error!!!"
 
 # 删除冗余的包
 rm -rf feeds/CustomPkgs/adguardhome
