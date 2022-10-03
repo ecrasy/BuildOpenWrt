@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-10-01 12:59:36 UTC
+ # Modified Time: 2022-10-03 02:34:17 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -30,7 +30,7 @@ name: Build x86_64 With Local Kmod
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 18 * * SUN'
+    - cron: '2 16 * * SUN'
   #watch:
   # types: [started]
 
