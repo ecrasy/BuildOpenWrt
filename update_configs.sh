@@ -3,29 +3,49 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-07 11:27:42 UTC
+# Modified Time: 2022-10-08 02:10:23 UTC
 #########################################################################
 
 
 #!/bin/bash
 
-configs="x86_64.config x86_64_kmod.config RaspberryPi4B.config RaspberryPi4B_kmod.config"
+function prompter() {
+    echo -e "\n********************************************\n$1"
+    command $2
+    echo -e "********************************************\n"
+}
 
-cd openwrt
+configs_dir="$HOME/code/BuildOpenwrt/configs"
+openwrt_dir="$HOME/code/openwrt"
+configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' | xargs basename -a | sort -f)
 
-git pull
-./scripts/feeds update -a
-./scripts/feeds install -a
+prompt="Configs found:"
+cmd="echo $configs"
+prompter "$prompt" "$cmd"
+
+cd $openwrt_dir
+
+prompt="Updating openwrt source code:"
+cmd="git pull"
+prompter "$prompt" "$cmd"
+
+prompt="Updating openwrt feeds packages:"
+cmd="$openwrt_dir/scripts/feeds update -a"
+prompter "$prompt" "$cmd"
+
+prompt="Installing openwrt feeds packages:"
+cmd="$openwrt_dir/scripts/feeds install -a"
+prompter "$prompt" "$cmd"
 
 for config in $configs 
 do
-    echo -e "\n======== updating $config ========"
+    echo -e "\n********************** Updating $config **********************"
 
-    rm .config*
-    cp ~/code/BuildOpenwrt/configs/$config .config
+    rm $openwrt_dir/.config*
+    cp $configs_dir/$config $openwrt_dir/.config
     make defconfig
-    ./scripts/diffconfig.sh > ~/code/BuildOpenwrt/configs/$config
+    $openwrt_dir/scripts/diffconfig.sh > $configs_dir/$config
 
-    echo -e "========  $config saved  ========\n"
+    echo -e "********************** $config saved **********************\n"
 done
 
