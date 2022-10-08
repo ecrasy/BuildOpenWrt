@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-08 02:10:23 UTC
+# Modified Time: 2022-10-08 09:37:19 UTC
 #########################################################################
 
 
@@ -41,7 +41,7 @@ for config in $configs
 do
     echo -e "\n********************** Updating $config **********************"
 
-    rm $openwrt_dir/.config*
+    rm -f $openwrt_dir/.config*
     cp $configs_dir/$config $openwrt_dir/.config
     make defconfig
     $openwrt_dir/scripts/diffconfig.sh > $configs_dir/$config
