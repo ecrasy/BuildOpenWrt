@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-08 09:37:19 UTC
+# Modified Time: 2022-10-08 09:49:18 UTC
 #########################################################################
 
 
@@ -17,7 +17,9 @@ function prompter() {
 
 configs_dir="$HOME/code/BuildOpenwrt/configs"
 openwrt_dir="$HOME/code/openwrt"
-configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' | xargs basename -a | sort -f)
+configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' -printf "%f\n" | sort -f)
+
+[ -z "$configs" ] && exit 0
 
 prompt="Configs found:"
 cmd="echo $configs"
