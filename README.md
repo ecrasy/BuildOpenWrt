@@ -4,9 +4,9 @@ Build OpenWrt with actions
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
 默认开启支持IPv6路由功能。  
-**很多梯子不支持IPv6**  
+**很多梯子使用的VPS不支持IPv6**  
 测试中passwall，passwall2和shadowsocksR plus在开启IPv6之后，  
-都会无法访问某些网站，甚至是同一个网站的某些子路径也会有访问问题，  
+都会无法访问某些网站，有些是同一个网站只有某些子路径会有访问问题，  
 此时可以尝试在**网络->接口->LAN->IPv6设置**中，  
 关闭**路由通告服务**和**DHCPv6 服务**，恢复梯子功能。  
 逆操作就可以重新开启IPv6功能。
