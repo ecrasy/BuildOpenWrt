@@ -43,7 +43,7 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
    机器重置至初始状态，  
    所有已保存状态会被清除。
 2. ext4文件系统不支持系统重置功能，  
-   支持使用工具GParted对已经烧写完固件的设备，  
+   支持使用工具GParted，  
    对已经烧写了固件的磁盘设备进行分区大小调整。
 
 ## 网络和代理 设置说明
@@ -68,7 +68,7 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
    测试中发现，1000M网络，这两个软件反而起负作用。  
    需要这两个软件的，可以使用命令make menuconfig勾选编译。
 8. 通过VPS搭建代理请查看wiki  
-   Wiki教程 [Wiki教程](https://github.com/ecrasy/BuildOpenwrt/wiki)  
+   [Wiki教程](https://github.com/ecrasy/BuildOpenwrt/wiki)  
    
 ## 光猫桥接网络设置
 Lan口设置：  
