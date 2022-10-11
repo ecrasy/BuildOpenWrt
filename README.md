@@ -68,7 +68,7 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
    测试中发现，1000M网络，这两个软件反而起负作用。  
    需要这两个软件的，可以使用命令make menuconfig勾选编译。
 8. 通过VPS搭建代理请查看wiki  
-   Wiki教程 [Wiki教程](https://github.com/ecrasy/BuildOpenwrt.wiki.git)  
+   Wiki教程 [Wiki教程](https://github.com/ecrasy/BuildOpenwrt/wiki)  
    
 ## 光猫桥接网络设置
 Lan口设置：  
