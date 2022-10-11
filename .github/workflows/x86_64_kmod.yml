@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-10-09 02:31:43 UTC
+ # Modified Time: 2022-10-11 00:31:11 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -185,7 +185,7 @@ jobs:
 
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1.11.1
         with:
           name: ${{ env.TOOLCHAIN_NAME }}
           allowUpdates: true
@@ -476,7 +476,7 @@ jobs:
 
       - name: Deploy Files To Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1.11.1
         with:
           name: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-Kmod
           allowUpdates: true
