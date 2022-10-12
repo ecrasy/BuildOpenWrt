@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2022-10-12 13:48:04 UTC
+# Modified Time: 2022-10-12 14:31:14 UTC
 #########################################################################
 
 #!/bin/bash
@@ -20,7 +20,7 @@ echo "src-git Passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main"
 
 # ssrp
 echo "Adding ShadowSocksR Plus"
-echo "src-git SSRP https://github.com/ecrasy/ssrp.git;main" >> feeds.conf.default
+echo "src-git ssrp https://github.com/ecrasy/ssrp.git;main" >> feeds.conf.default
 
 # add custom packages
 echo "Adding custom packages"

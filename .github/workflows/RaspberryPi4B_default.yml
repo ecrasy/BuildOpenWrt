@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-12 14:00:59 UTC
+ # Modified Time: 2022-10-12 14:26:47 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -86,7 +86,6 @@ jobs:
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          docker image prune -a -f
           mkdir workspace
 
       - name: Clone Source Code
@@ -217,37 +216,6 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Restore Variables
-        run: |
-          git config --global init.defaultBranch main
-          git config --global advice.detachedHead false
-          echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
-          echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
-          echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
-          echo "DEVICE_PLATFORM=$(echo '${{needs.Toolchain.outputs.DEVICE_PLATFORM}}')" >> $GITHUB_ENV
-          echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
-          echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
-          echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
-          echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Initialize Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
-          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          docker image prune -a -f
-
       - name: Combine Disks
         if: env.COMBINE_DISK == 'true'
         run: |
@@ -277,6 +245,36 @@ jobs:
           sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
           df -hT $GITHUB_WORKSPACE
           sudo btrfs filesystem usage $GITHUB_WORKSPACE
+
+      - name: Restore Variables
+        run: |
+          git config --global init.defaultBranch main
+          git config --global advice.detachedHead false
+          echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
+          echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
+          echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
+          echo "DEVICE_PLATFORM=$(echo '${{needs.Toolchain.outputs.DEVICE_PLATFORM}}')" >> $GITHUB_ENV
+          echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
+          echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
+          echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Initialize Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
@@ -353,7 +351,6 @@ jobs:
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           docker image prune -a -f
-          df -h
 
       - name: Download Packages
         id: download
