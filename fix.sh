@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-10 04:20:59 UTC
+# Modified Time: 2022-10-12 13:48:57 UTC
 #########################################################################
 
 
@@ -41,4 +41,6 @@ echo "Fixing luci-app-statistics error from github.com/openwrt/luci/issues/5373"
 touch package/base-files/files/etc/bench.log
 chmod 0666 package/base-files/files/etc/bench.log
 echo "Touching coremark log file to fix uhttpd error!!!"
+
+echo "FIX Completed!!!"
 

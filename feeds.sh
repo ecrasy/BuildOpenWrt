@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2022-10-01 12:57:29 UTC
+# Modified Time: 2022-10-12 13:48:04 UTC
 #########################################################################
 
 #!/bin/bash
@@ -22,8 +22,8 @@ echo "src-git Passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main"
 echo "Adding ShadowSocksR Plus"
 echo "src-git SSRP https://github.com/ecrasy/ssrp.git;main" >> feeds.conf.default
 
-# add argon theme & adguardhome
-echo "Adding theme argon & adguardhome"
-echo "src-git CustomPkgs https://github.com/ecrasy/openwrt-packages.git;main" >> feeds.conf.default
+# add custom packages
+echo "Adding custom packages"
+echo "src-git CustomPkgs https://github.com/ecrasy/custom-packages.git;for_lede" >> feeds.conf.default
 
 echo "Adding Feeds Completed!!!"
