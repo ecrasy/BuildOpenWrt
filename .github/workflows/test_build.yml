@@ -1,8 +1,8 @@
 ##************************************************************************
- # File Name: x86_64.yml
+ # File Name: test_build.yml
  # Author: Carbon (ecrasy@gmail.com)
- # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-10-13 13:31:44 UTC
+ # Created Time: 2022-07-16 15:23:37 UTC
+ # Modified Time: 2022-10-13 22:36:46 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -25,25 +25,23 @@
 ##**********************************************************************/
 
 
-name: Test Build x86_64
+name: Test Build RaspberryPi4B
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '45 13 * * SAT'
   #watch:
   # types: [started]
 
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
   SOURCE_BRANCH: master
-  CONFIG_FILE: configs/x86_64.config
+  CONFIG_FILE: configs/RaspberryPi4B.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
-  IMAGE_TAG: x86_64
-  TOOLCHAIN_TAG: toolchain-x86_64
-  TOOLCHAIN_NAME: toolchain-image-x86_64
+  IMAGE_TAG: RaspberryPi4B
+  TOOLCHAIN_TAG: toolchain-bcm2711
+  TOOLCHAIN_NAME: toolchain-image-bcm2711
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
@@ -133,7 +131,7 @@ jobs:
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_ENV
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_OUTPUT
 
-          export TOOLCHAIN_IMAGE="toolchain-$SOURCE_OWNER-$SOURCE_REPO-$SOURCE_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
+          export TOOLCHAIN_IMAGE="toolchain--$DEVICE_TARGET-$DEVICE_SUBTARGET"
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_OUTPUT
 
@@ -206,7 +204,7 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           tag: ${{ env.TOOLCHAIN_TAG }}
-          body: toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
+          body: toolchain for RaspberryPi 4B built @ ${{ env.BUILD_DATE }}
           commit: ${{ env.CURRENT_BRANCH }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: output/*
@@ -368,115 +366,5 @@ jobs:
           make buildinfo
           make diffconfig buildversion feedsversion
           make target/compile -j$(nproc) || make target/compile -j1 V=s
-          make package/compile -j$(nproc) || make package/compile -j1 V=s
-          make package/index
-
-      - name: Generate Firmware
-        id: generate
-        run: |
-          cd $OPENWRT_ROOT_PATH
-          make package/install -j$(nproc) || make package/install -j1 V=s
-          make target/install -j$(nproc) || make target/install -j1 V=s
-          make json_overview_image_info
-          make checksum
-
-      - name: Print Sha256sums
-        run: |
-          cd $OPENWRT_ROOT_PATH/bin/targets/$DEVICE_TARGET/$DEVICE_SUBTARGET
-          cat sha256sums
-
-      - name: Compress Bin Folder
-        run: |
-          cd $OPENWRT_ROOT_PATH
-          zip -r $DEVICE_TARGET-$DEVICE_SUBTARGET.zip bin
-
-      - name: Print Disk Usage
-        if: always()
-        run: |
-          echo 'lsblk -f'
-          lsblk -f
-          echo '-----'
-          echo 'df -hT'
-          df -hT
-          echo '-----'
-          echo 'btrfs filesystem usage'
-          sudo btrfs filesystem usage $GITHUB_WORKSPACE
-          echo '-----'
-
-      - name: Upload Bin Archive
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: bin-archive
-          path: ${{ env.OPENWRT_ROOT_PATH }}/${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}.zip
-
-  Upload:
-    needs: [Build, Toolchain]
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Restore Variables
-        run: |
-          git config --global init.defaultBranch main
-          git config --global advice.detachedHead false
-          echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
-          echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
-          echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
-          echo "DEVICE_PLATFORM=$(echo '${{needs.Toolchain.outputs.DEVICE_PLATFORM}}')" >> $GITHUB_ENV
-          echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
-          echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
-          echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
-          echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Initialize Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install zip unzip rsync
-          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-
-      - name: Download Bin Archive
-        uses: actions/download-artifact@v3
-        with:
-          name: bin-archive
-          path: ${{ env.OPENWRT_ROOT_PATH }}
-
-      - name: Decompress Bin Archive
-        run: |
-          cd $OPENWRT_ROOT_PATH
-          unzip $DEVICE_TARGET-$DEVICE_SUBTARGET.zip
-
-      - name: Organize Files
-        run: |
-          cd $OPENWRT_ROOT_PATH/bin/targets/$DEVICE_TARGET/$DEVICE_SUBTARGET
-          rm -rf packages
-          df -hT $PWD
-
-      - name: Delete Files From Release
-        if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true 
-          tag_name: ${{ env.IMAGE_TAG }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy Files To Release
-        if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
-        uses: ncipollo/release-action@v1.11.1
-        with:
-          name: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
-          allowUpdates: true
-          replacesArtifacts: true
-          tag: ${{ env.IMAGE_TAG }}
-          body: Firmware for x86_64 built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_BRANCH }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: ${{ env.OPENWRT_ROOT_PATH }}/bin/targets/${{ env.DEVICE_TARGET }}/${{ env.DEVICE_SUBTARGET }}/*
+          make package/feeds/packages/python3/host/compile -j1 V=s
 
