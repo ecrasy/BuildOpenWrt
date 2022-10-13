@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-13 00:48:41 UTC
+ # Modified Time: 2022-10-13 09:35:36 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -88,7 +88,7 @@ jobs:
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           mkdir workspace
 
-      - name: Clone Source Code
+      - name: Clone Openwrt Source
         id: clone
         run: |
           git clone $SOURCE_URL -b $SOURCE_BRANCH workspace/openwrt
@@ -160,14 +160,14 @@ jobs:
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) threads compile tools"
+          echo "$(nproc) threads compile tools"
           make tools/compile -j$(nproc) || make tools/compile -j1 V=s
 
       - name: Compile Toolchain
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) threads compile toolchain"
+          echo "$(nproc) threads compile toolchain"
           make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
           rm -rf .config* dl bin
 
@@ -358,13 +358,13 @@ jobs:
         id: download
         run: |
           cd $OPENWRT_ROOT_PATH
-          make download -j$(nproc) || make download -j1 V=s
-          df -h
+          make download -j8 || make download -j1 V=s
+          df -hT
 
       - name: Compile Packages
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) threads compile packages"
+          echo "$(nproc) threads compile packages"
           make buildinfo
           make diffconfig buildversion feedsversion
           make target/compile -j$(nproc) IGNORE_ERRORS="m n" BUILD_LOG=1 || \
@@ -398,8 +398,8 @@ jobs:
           echo 'lsblk -f'
           lsblk -f
           echo '-----'
-          echo 'df -h'
-          df -h
+          echo 'df -hT'
+          df -hT
           echo '-----'
           echo 'btrfs filesystem usage'
           sudo btrfs filesystem usage $GITHUB_WORKSPACE

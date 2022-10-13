@@ -2,7 +2,7 @@
  # File Name: env_test.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-10-12 06:26:03 UTC
+ # Modified Time: 2022-10-13 09:33:39 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -28,12 +28,9 @@
 name: Env Test
 
 on:
-  repository_dispatch:
   workflow_dispatch:
-  #schedule:
-  #  - cron: 0 18 * * *
-  # watch:
-  #   types: started
+  #watch:
+  # types: [started]
 
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
@@ -43,7 +40,8 @@ env:
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
   IMAGE_TAG: x86_64
-  TOOLCHAIN_TAG: toolchain
+  TOOLCHAIN_TAG: toolchain-x86_64
+  TOOLCHAIN_NAME: toolchain-image-x86_64
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
@@ -57,42 +55,44 @@ jobs:
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
       CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
-      CURRENT_COMMIT: ${{ steps.env.outputs.CURRENT_COMMIT }}
       SOURCE_OWNER: ${{ steps.env.outputs.SOURCE_OWNER }}
       SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
       DEVICE_PLATFORM: ${{ steps.env.outputs.DEVICE_PLATFORM }}
       DEVICE_TARGET: ${{ steps.env.outputs.DEVICE_TARGET }}
       DEVICE_SUBTARGET: ${{ steps.env.outputs.DEVICE_SUBTARGET }}
       TOOLCHAIN_IMAGE: ${{ steps.env.outputs.TOOLCHAIN_IMAGE }}
+      BUILD_DATE: ${{ steps.env.outputs.BUILD_DATE }}
 
     steps:
-      - name: Initialize Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
+      - name: Setup Variables
         run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/ecrasy/BuildOpenwrt/main/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
-          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          docker image prune -a -f
           git config --global init.defaultBranch main
-          mkdir -p workspace
+          git config --global advice.detachedHead false
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Initialize Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          mkdir workspace
+
       - name: Clone Source Code
         id: clone
         run: |
-          df -hT $PWD
           git clone $SOURCE_URL -b $SOURCE_BRANCH workspace/openwrt
           cd workspace/openwrt
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
-          echo "::set-output name=OPENWRT_ROOT_PATH::$(echo $PWD)"
+          echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_OUTPUT
 
       - name: Generate Toolchain Config
         run: |
@@ -108,31 +108,36 @@ jobs:
           cd $GITHUB_WORKSPACE
           export CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
           echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
-          echo "::set-output name=CURRENT_BRANCH::$(echo $CURRENT_BRANCH)"
-          export CURRENT_COMMIT="$(git rev-parse --short HEAD)"
-          echo "CURRENT_COMMIT=$CURRENT_COMMIT" >> $GITHUB_ENV
-          echo "::set-output name=CURRENT_COMMIT::$(echo $CURRENT_COMMIT)"
+          echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_OUTPUT
+
           cd $OPENWRT_ROOT_PATH
           export SOURCE_OWNER="$(echo $SOURCE_URL | awk -F '/' '{print $(NF-1)}')"
           echo "SOURCE_OWNER=$SOURCE_OWNER" >> $GITHUB_ENV
-          echo "::set-output name=SOURCE_OWNER::$(echo $SOURCE_OWNER)"
+          echo "SOURCE_OWNER=$SOURCE_OWNER" >> $GITHUB_OUTPUT
+
           export SOURCE_REPO="$(echo $SOURCE_URL | awk -F '/' '{print $(NF)}')"
           echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
-          echo "::set-output name=SOURCE_REPO::$(echo $SOURCE_REPO)"
+          echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_OUTPUT
+
           export DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
           echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
-          echo "::set-output name=DEVICE_TARGET::$(echo $DEVICE_TARGET)"
+          echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_OUTPUT
+
           export DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
           echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
-          echo "::set-output name=DEVICE_SUBTARGET::$(echo $DEVICE_SUBTARGET)"
+          echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_OUTPUT
+
           export DEVICE_PLATFORM=$(cat .config | grep CONFIG_TARGET_ARCH_PACKAGES | awk -F '"' '{print $2}')
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_ENV
-          echo "::set-output name=DEVICE_PLATFORM::$(echo $DEVICE_PLATFORM)"
+          echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_OUTPUT
+
           export TOOLCHAIN_IMAGE="toolchain-$SOURCE_OWNER-$SOURCE_REPO-$SOURCE_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
-          echo "::set-output name=TOOLCHAIN_IMAGE::$(echo $TOOLCHAIN_IMAGE)"
+          echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_OUTPUT
+
           export BUILD_DATE=$(date +"%Y-%m-%d")
           echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_OUTPUT
 
       - name: Compare Toolchain Hash
         id: hash
@@ -140,80 +145,53 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           export CURRENT_HASH=$(git log --pretty=tformat:"%H" -n1 tools toolchain)
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
-          echo "::set-output name=CURRENT_HASH::$(echo $CURRENT_HASH)"
+          echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_OUTPUT
           echo "CURRENT_HASH is $CURRENT_HASH"
+
           export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
           echo "CACHE_HASH is $CACHE_HASH"
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
-            echo "::set-output name=REBUILD_TOOLCHAIN::true"
+            echo "REBUILD_TOOLCHAIN=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Compile Tools
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) threads compile tools"
+          echo "$(nproc) threads compile tools"
 
       - name: Compile Toolchain
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo -e "$(nproc) threads compile toolchain"
+          echo "$(nproc) threads compile toolchain"
 
       - name: Generate Toolchain Image
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd workspace
-          echo -e "Generate toolchain image"
-          
+          echo "Generate Toolchain Image"
+
       - name: Upload Toolchain Image To Artifact
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
-          echo -e "toolchain image: ${{ env.TOOLCHAIN_IMAGE }}"
+          echo "Upload Toolchain Image To Artifact"
 
-      - name: Delete Old Toolchain Assets From Release
+      - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
-          echo -e "Delete old toolchain assets from release: toolchain-${{ env.TOOLCHAIN_IMAGE }}.*"
-          echo -e "toolchain tag: ${{ env.TOOLCHAIN_TAG }}"
+          echo "Delete Toolchain Image From Release"
 
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
-          echo -e "Upload toolchain image to release: toolchain-${{ env.BUILD_DATE }}.*"
-          echo -e "toolchain tag: ${{ env.TOOLCHAIN_TAG }}"
-          echo -e "toolchain commit: ${{ env.CURRENT_COMMIT }}"
+          echo "Upload Toolchain Image To Release"
 
   Build:
     needs: [Toolchain]
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Restore Variables
-        run: |
-          echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
-          echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
-          echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
-          echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
-          echo "DEVICE_PLATFORM=$(echo '${{needs.Toolchain.outputs.DEVICE_PLATFORM}}')" >> $GITHUB_ENV
-          echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
-          echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
-          echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
-
-      - name: Initialize Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/ecrasy/BuildOpenwrt/main/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
-          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          docker image prune -a -f
-          git config --global init.defaultBranch main
-
       - name: Combine Disks
         if: env.COMBINE_DISK == 'true'
         run: |
@@ -244,98 +222,12 @@ jobs:
           df -hT $GITHUB_WORKSPACE
           sudo btrfs filesystem usage $GITHUB_WORKSPACE
 
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download Toolchain Image From Artifacts
-        if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        run: |
-          echo -e "Download toolchain image from artifacts to workspace"
-
-      - name: Prepare Toolchain Image From Artifacts
-        if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        run: |
-          echo -e "Prepare toolchain image from artifacts"
-
-      - name: Prepare Toolchain Image From Releases
-        if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true'
-        run: |
-          echo -e "Prepare toolchain image from releases"
-
-      - name: Load Custom Feeds
-        run: |
-          echo -e "Load Custom Feeds"
-          
-      - name: Install Feeds
-        run: |
-          echo -e "Install Custom Feeds"
-
-      - name: Load Custom Configuration
-        run: |
-          echo -e "Load Custom Configuration"
-
-      - name: Free UP Disk Space
-        if: env.FREE_UP_DISK == 'true'
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          echo -e "Free UP Disk Space"
-          
-      - name: Download DL Package
-        id: download
-        run: |
-          echo -e "Download DL Package"
-
-      - name: Compile Packages
-        run: |
-          echo -e "$(nproc) threads compile packages"
-          
-      - name: Generate Firmware
-        id: generate
-        run: |
-          echo -e "Generate Firmware"
-          
-      - name: Print Sha256sums
-        run: |
-          echo -e "Print Sha256sums"
-
-      - name: Compress Bin Folder
-        run: |
-          echo -e "Compress Bin Folder"
-
-      - name: Print Disk Usage
-        if: always()
-        run: |
-          echo 'lsblk -f'
-          lsblk -f
-          echo '-----'
-          echo 'df -h'
-          df -h
-          echo '-----'
-          echo 'btrfs filesystem usage'
-          sudo btrfs filesystem usage $GITHUB_WORKSPACE
-          echo '-----'
-
-      - name: Upload Bin Archive
-        run: |
-          echo -e "Upload Bin Archive"
-
-  Upload:
-    needs: [Build, Toolchain]
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Restore Variables
         run: |
+          git config --global init.defaultBranch main
+          git config --global advice.detachedHead false
+          git config --global pull.rebase false
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
-          echo "CURRENT_COMMIT=$(echo '${{needs.Toolchain.outputs.CURRENT_COMMIT}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
           echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
@@ -343,6 +235,141 @@ jobs:
           echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
           echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
           echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
+
+      - name: Checkout
+        run: |
+          cd $GITHUB_WORKSPACE
+          git init
+          git remote add origin https://github.com/$GITHUB_REPOSITORY
+          git fetch --depth 1 origin $GITHUB_REF
+          git checkout -t origin/$CURRENT_BRANCH
+
+      - name: Initialize Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+      - name: Download Toolchain Image From Artifacts
+        if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
+        run: |
+          echo "Download Toolchain Image From Artifacts"
+
+      - name: Prepare Toolchain Image From Artifacts
+        if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
+        run: |
+          echo "Prepare Toolchain Image From Artifacts"
+
+      - name: Prepare Toolchain Image From Releases
+        if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true'
+        run: |
+          echo "Prepare Toolchain Image From Releases"
+
+      - name: Load Custom Feeds
+        run: |
+          cp $FEEDS_SH $OPENWRT_ROOT_PATH/$FEEDS_SH
+          chmod +x $OPENWRT_ROOT_PATH/$FEEDS_SH
+          cd $OPENWRT_ROOT_PATH
+          ./$FEEDS_SH
+          
+      - name: Install Feeds
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          ./scripts/feeds clean
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Load Custom Configuration
+        run: |
+          cp $DIY_SH $OPENWRT_ROOT_PATH/$DIY_SH
+          cp $FIX_SH $OPENWRT_ROOT_PATH/$FIX_SH
+          cp $CONFIG_FILE $OPENWRT_ROOT_PATH/.config
+          chmod +x $OPENWRT_ROOT_PATH/$DIY_SH
+          chmod +x $OPENWRT_ROOT_PATH/$FIX_SH
+          cd $OPENWRT_ROOT_PATH
+          ./$FIX_SH
+          ./$DIY_SH
+          make defconfig
+
+      - name: Free Up Disk Space
+        if: env.FREE_UP_DISK == 'true'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo "Prepare Toolchain Image From Releases"
+
+      - name: Download Packages
+        id: download
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          echo "Download Packages"
+
+      - name: Compile Packages
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          echo "$(nproc) threads compile packages"
+
+      - name: Generate Firmware
+        id: generate
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          echo "Generate Firmware"
+
+      - name: Print Sha256sums
+        run: |
+          echo "Print Sha256sums"
+
+      - name: Compress Bin Folder
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          echo "Compress Bin Folder"
+
+      - name: Print Disk Usage
+        if: always()
+        run: |
+          echo 'lsblk -f'
+          lsblk -f
+          echo '-----'
+          echo 'df -hT'
+          df -hT
+          echo '-----'
+          echo 'btrfs filesystem usage'
+          sudo btrfs filesystem usage $GITHUB_WORKSPACE
+          echo '-----'
+
+      - name: Upload Bin Archive
+        run: |
+          echo "Upload Bin Archive"
+
+  Upload:
+    needs: [Build, Toolchain]
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Restore Variables
+        run: |
+          git config --global init.defaultBranch main
+          git config --global advice.detachedHead false
+          echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
+          echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
+          echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
+          echo "SOURCE_REPO=$(echo '${{needs.Toolchain.outputs.SOURCE_REPO}}')" >> $GITHUB_ENV
+          echo "DEVICE_PLATFORM=$(echo '${{needs.Toolchain.outputs.DEVICE_PLATFORM}}')" >> $GITHUB_ENV
+          echo "DEVICE_TARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_TARGET}}')" >> $GITHUB_ENV
+          echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
+          echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Initialize Environment
         env:
@@ -351,33 +378,26 @@ jobs:
           sudo -E apt-get -qq update
           sudo -E apt-get -qq install zip unzip rsync
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          git config --global init.defaultBranch main
 
       - name: Download Bin Archive
         run: |
-          echo -e "Downlaod Bin Archive"
+          echo "Download Bin Archive"
 
       - name: Decompress Bin Archive
         run: |
-          echo -e "Decompress Bin Archive"
+          echo "Decompress Bin Archive"
 
       - name: Organize Files
         run: |
-          export BUILD_DATE=$(date +"%Y-%m-%d")
-          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
-          echo -e "Organize Files"
+          echo "Organize Files"
 
-
-      - name: Delete Old Firmware Assets
-        if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
+      - name: Delete Files From Release
+        if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
         run: |
-          echo -e "Delete Old Firmware Assets"
-        
+          echo "Delete Files From Release"
+
       - name: Deploy Files To Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
         run: |
-          echo -e "Deploy Files To Release"
-          echo -e "Upload images to release: image-${{ env.BUILD_DATE }}.*"
-          echo -e "image tag: ${{ env.IMAGE_TAG }}"
-          echo -e "image commit: ${{ env.CURRENT_COMMIT }}"
+          echo "Deploy Files To Release"
 
