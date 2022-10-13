@@ -1,5 +1,6 @@
 # BuildOpenWrt
-Build OpenWrt with GitHub actions
+Build LEDE OpenWrt with GitHub actions
+[官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
