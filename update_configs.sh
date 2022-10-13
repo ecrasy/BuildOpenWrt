@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-08 09:49:18 UTC
+# Modified Time: 2022-10-13 05:49:14 UTC
 #########################################################################
 
 
@@ -15,7 +15,7 @@ function prompter() {
     echo -e "********************************************\n"
 }
 
-configs_dir="$HOME/code/BuildOpenwrt/configs"
+configs_dir="$HOME/code/BuildOpenWrt/configs"
 openwrt_dir="$HOME/code/openwrt"
 configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' -printf "%f\n" | sort -f)
 
