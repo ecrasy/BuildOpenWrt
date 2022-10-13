@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-13 09:35:36 UTC
+ # Modified Time: 2022-10-13 13:36:13 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -42,8 +42,8 @@ env:
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
   IMAGE_TAG: RaspberryPi4B
-  TOOLCHAIN_TAG: toolchain-pi4b
-  TOOLCHAIN_NAME: toolchain-image-pi4b
+  TOOLCHAIN_TAG: toolchain-bcm2711
+  TOOLCHAIN_NAME: toolchain-image-bcm2711
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
@@ -133,7 +133,7 @@ jobs:
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_ENV
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_OUTPUT
 
-          export TOOLCHAIN_IMAGE="toolchain-$SOURCE_OWNER-$SOURCE_REPO-$SOURCE_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
+          export TOOLCHAIN_IMAGE="toolchain--$DEVICE_TARGET-$DEVICE_SUBTARGET"
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_OUTPUT
 
