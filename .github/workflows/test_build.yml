@@ -2,7 +2,7 @@
  # File Name: test_build.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-13 22:55:59 UTC
+ # Modified Time: 2022-10-14 04:37:48 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -189,25 +189,17 @@ jobs:
 
       - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true 
-          tag_name: ${{ env.TOOLCHAIN_TAG }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete $TOOLCHAIN_TAG -y
+          git push origin :refs/tags/$TOOLCHAIN_TAG
 
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: ncipollo/release-action@v1.11.1
-        with:
-          name: ${{ env.TOOLCHAIN_NAME }}
-          allowUpdates: true
-          replacesArtifacts: true
-          tag: ${{ env.TOOLCHAIN_TAG }}
-          body: toolchain for RaspberryPi 4B built @ ${{ env.BUILD_DATE }}
-          commit: ${{ env.CURRENT_BRANCH }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: output/*
+        env:
+          NOTES: Toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
+          COMMIT: ${{ env.CURRENT_BRANCH }}
+        run: |
+          gh release create $TOOLCHAIN_TAG --title $TOOLCHAIN_NAME --notes $NOTES --target $COMMIT output/*
 
   Build:
     needs: [Toolchain]
