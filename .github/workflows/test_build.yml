@@ -45,7 +45,7 @@ env:
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
-  COMBINE_DISK: false
+  COMBINE_DISK: true
   TZ: Asia/Shanghai
 
 jobs:
@@ -54,6 +54,7 @@ jobs:
 
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
+      TOOLCHAIN_OUTPUT: ${{ steps.clone.outputs.TOOLCHAIN_OUTPUT }}
       CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
       SOURCE_OWNER: ${{ steps.env.outputs.SOURCE_OWNER }}
       SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
@@ -93,6 +94,12 @@ jobs:
           cd workspace/openwrt
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_OUTPUT
+
+          mkdir -p $GITHUB_WORKSPACE/output
+          cd $GITHUB_WORKSPACE/output
+          export TOOLCHAIN_OUTPUT="$(pwd)"
+          echo "TOOLCHAIN_OUTPUT=$TOOLCHAIN_OUTPUT" >> $GITHUB_ENV
+          echo "TOOLCHAIN_OUTPUT=$TOOLCHAIN_OUTPUT" >> $GITHUB_OUTPUT
 
       - name: Generate Toolchain Config
         run: |
@@ -192,12 +199,14 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          export ASSETS=$(gh release view $TOOLCHAIN_TAG)
-          echo "toolchain release assets:$ASSETS"
-          if [ ! -z "$ASSETS" ]; then
-            echo "try to delete old toolchain release assets"
-            gh release delete $TOOLCHAIN_TAG -y
-            git push origin :refs/tags/$TOOLCHAIN_TAG
+          export assets=$(gh release view "$TOOLCHAIN_TAG" --json "assets" --jq ".assets.[].name")
+          if [ ! -z "$assets" ]; then
+            echo "try to delete old toolchain release assets: $assets"
+            for asset in $assets
+            do
+              gh release delete-asset "$TOOLCHAIN_TAG" $asset -y
+            done
+            gh release delete "$TOOLCHAIN_TAG" -y
           fi
 
       - name: Upload Toolchain Image To Release
@@ -206,10 +215,16 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
           NOTES: Toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
-          FILES: ${{ env.GITHUB_WORKSPACE }}/output/*
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$TOOLCHAIN_TAG" --title "$TOOLCHAIN_NAME" --notes "$NOTES" --target "$COMMIT" "$FILES"
+          assets=$(ls "$TOOLCHAIN_OUTPUT")
+          if [ ! -z "$assets" ]; then
+            gh release create "$TOOLCHAIN_TAG" --title "$TOOLCHAIN_NAME" --notes "$NOTES" --target "$COMMIT"
+            for asset in $assets
+            do
+              gh release upload "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset"
+            done
+          fi
 
   Build:
     needs: [Toolchain]
