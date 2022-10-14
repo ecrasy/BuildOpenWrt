@@ -222,9 +222,11 @@ jobs:
           assets=$(ls "$TOOLCHAIN_OUTPUT")
           if [ ! -z "$assets" ]; then
             gh release create "$TOOLCHAIN_TAG" --title "$TOOLCHAIN_NAME" --notes "$NOTES" --target "$COMMIT"
+            echo "create release with tag:$TOOLCHAIN_TAG to $COMMIT"
             for asset in $assets
             do
               gh release upload "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset"
+              echo "upload $asset to release @ tag:$TOOLCHAIN_TAG"
             done
           fi
 
@@ -532,9 +534,11 @@ jobs:
           assets=$(ls "$IMAGE_OUTPUT")
           if [ ! -z "$assets" ]; then
             gh release create "$IMAGE_TAG" --title "$IMAGE_NAME" --notes "$NOTES" --target "$COMMIT"
+            echo "create release with tag:$IMAGE_TAG to $COMMIT"
             for asset in $assets
             do
               gh release upload "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset"
+              echo "upload $asset to release @ tag:$IMAGE_TAG"
             done
           fi
 
