@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-10-14 05:41:23 UTC
+ # Modified Time: 2022-10-14 06:02:26 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -47,7 +47,7 @@ env:
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
-  COMBINE_DISK: true
+  COMBINE_DISK: false
   TZ: Asia/Shanghai
 
 jobs:
