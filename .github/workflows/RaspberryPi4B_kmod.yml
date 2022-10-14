@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-10-13 22:59:10 UTC
+ # Modified Time: 2022-10-14 05:39:59 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -417,15 +417,19 @@ jobs:
       - name: Print Disk Usage
         if: always()
         run: |
-          echo 'lsblk -f'
+          echo "lsblk -f"
           lsblk -f
-          echo '-----'
-          echo 'df -hT'
+          echo -e "============================\n"
+          echo "df -hT"
           df -hT
-          echo '-----'
-          echo 'btrfs filesystem usage'
+          echo -e "============================\n"
+
+      - name: Print Btrfs Usage
+        if: env.COMBINE_DISK == 'true'
+        run: |
+          echo "btrfs filesystem usage"
           sudo btrfs filesystem usage $GITHUB_WORKSPACE
-          echo '-----'
+          echo -e "============================\n"
 
       - name: Upload Bin Archive
         uses: actions/upload-artifact@v3.1.0
