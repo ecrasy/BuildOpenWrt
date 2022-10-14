@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-14 06:02:09 UTC
+ # Modified Time: 2022-10-14 11:18:54 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -179,7 +179,6 @@ jobs:
           split -d -b 1900M $TOOLCHAIN_IMAGE $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.img.
           rm $TOOLCHAIN_IMAGE
           cd $OPENWRT_ROOT_PATH
-          mkdir -p $GITHUB_WORKSPACE/output
           echo $CURRENT_HASH > $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.hash
 
       - name: Upload Toolchain Image To Artifact
@@ -209,9 +208,10 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
           NOTES: Toolchain for RaspberryPi 4b built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
+          FILES: $GITHUB_WORKSPACE/output/*
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create $TOOLCHAIN_TAG --title $TOOLCHAIN_NAME --notes $NOTES --target $COMMIT output/*
+          gh release create $TOOLCHAIN_TAG --title $TOOLCHAIN_NAME --notes $NOTES --target $COMMIT $FILES
 
   Build:
     needs: [Toolchain]
@@ -241,7 +241,7 @@ jobs:
           sudo mkfs.btrfs -L combinedisk $LV_DEVNAME
           sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
           sudo chown -R runner:runner $GITHUB_WORKSPACE
-          mkdir $GITHUB_WORKSPACE/tmp
+          mkdir -p $GITHUB_WORKSPACE/tmp
           chmod 0777 $GITHUB_WORKSPACE/tmp
           sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
           sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
