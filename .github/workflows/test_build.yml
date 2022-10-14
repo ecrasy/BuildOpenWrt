@@ -1,8 +1,8 @@
 ##************************************************************************
  # File Name: test_build.yml
  # Author: Carbon (ecrasy@gmail.com)
- # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-14 05:44:01 UTC
+ # Created Time: 2022-07-16 15:39:29 UTC
+ # Modified Time: 2022-10-14 10:04:31 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -25,7 +25,7 @@
 ##**********************************************************************/
 
 
-name: Test Build RaspberryPi4B
+name: Test Build x86_64
 
 on:
   workflow_dispatch:
@@ -35,17 +35,17 @@ on:
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
   SOURCE_BRANCH: master
-  CONFIG_FILE: configs/RaspberryPi4B.config
+  CONFIG_FILE: configs/x86_64.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
-  IMAGE_TAG: RaspberryPi4B
-  TOOLCHAIN_TAG: toolchain-bcm2711
-  TOOLCHAIN_NAME: toolchain-image-bcm2711
+  IMAGE_TAG: x86_64
+  TOOLCHAIN_TAG: toolchain-x86_64
+  TOOLCHAIN_NAME: toolchain-image-x86_64
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
-  COMBINE_DISK: true
+  COMBINE_DISK: false
   TZ: Asia/Shanghai
 
 jobs:
@@ -79,10 +79,10 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           mkdir workspace
 
@@ -147,7 +147,6 @@ jobs:
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_OUTPUT
           echo "CURRENT_HASH is $CURRENT_HASH"
-
           export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
           echo "CACHE_HASH is $CACHE_HASH"
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
@@ -178,6 +177,7 @@ jobs:
           split -d -b 1900M $TOOLCHAIN_IMAGE $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.img.
           rm $TOOLCHAIN_IMAGE
           cd $OPENWRT_ROOT_PATH
+          mkdir -p $GITHUB_WORKSPACE/output
           echo $CURRENT_HASH > $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.hash
 
       - name: Upload Toolchain Image To Artifact
@@ -190,14 +190,21 @@ jobs:
       - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete $TOOLCHAIN_TAG -y
-          git push origin :refs/tags/$TOOLCHAIN_TAG
+          export ASSETS=$(gh release view $TOOLCHAIN_TAG)
+          echo "toolchain release assets:$ASSETS"
+          if [ ! -z "$ASSETS" ]; then
+            echo "try to delete old toolchain release assets"
+            gh release delete $TOOLCHAIN_TAG -y
+            git push origin :refs/tags/$TOOLCHAIN_TAG
+          fi
 
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           NOTES: Toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -254,6 +261,7 @@ jobs:
           echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
 
+
       - name: Checkout
         run: |
           cd $GITHUB_WORKSPACE
@@ -267,10 +275,10 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Toolchain Image From Artifacts
@@ -342,9 +350,9 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           docker image prune -a -f
 
       - name: Download Packages

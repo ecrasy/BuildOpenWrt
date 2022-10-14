@@ -81,10 +81,10 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           mkdir workspace
 
@@ -149,7 +149,6 @@ jobs:
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_OUTPUT
           echo "CURRENT_HASH is $CURRENT_HASH"
-
           export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
           echo "CACHE_HASH is $CACHE_HASH"
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
@@ -180,6 +179,7 @@ jobs:
           split -d -b 1900M $TOOLCHAIN_IMAGE $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.img.
           rm $TOOLCHAIN_IMAGE
           cd $OPENWRT_ROOT_PATH
+          mkdir -p $GITHUB_WORKSPACE/output
           echo $CURRENT_HASH > $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.hash
 
       - name: Upload Toolchain Image To Artifact
@@ -192,14 +192,21 @@ jobs:
       - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete $TOOLCHAIN_TAG -y
-          git push origin :refs/tags/$TOOLCHAIN_TAG
+          export ASSETS=$(gh release view $TOOLCHAIN_TAG)
+          echo "toolchain release assets:$ASSETS"
+          if [ ! -z "$ASSETS" ]; then
+            echo "try to delete old toolchain release assets"
+            gh release delete $TOOLCHAIN_TAG -y
+            git push origin :refs/tags/$TOOLCHAIN_TAG
+          fi
 
       - name: Upload Toolchain Image To Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           NOTES: Toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -256,6 +263,7 @@ jobs:
           echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
 
+
       - name: Checkout
         run: |
           cd $GITHUB_WORKSPACE
@@ -269,10 +277,10 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Toolchain Image From Artifacts
@@ -344,9 +352,9 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo -E apt-get -q purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           docker image prune -a -f
 
       - name: Download Packages
@@ -437,8 +445,8 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install zip unzip rsync
+          sudo -E apt-get update
+          sudo -E apt-get -y install zip unzip rsync
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Bin Archive
@@ -461,14 +469,21 @@ jobs:
       - name: Delete Files From Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete $IMAGE_TAG -y
-          git push origin :refs/tags/$IMAGE_TAG
+          export ASSETS=$(gh release view $IMAGE_TAG)
+          echo "image release assets:$ASSETS"
+          if [ ! -z "$ASSETS" ]; then
+            echo "try to delete old image release assets"
+            gh release delete $IMAGE_TAG -y
+            git push origin :refs/tags/$IMAGE_TAG
+          fi
 
       - name: Deploy Files To Release
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
         env:
+          DEBIAN_FRONTEND: noninteractive
           TITLE: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
           NOTES: Firmware for x86_64 built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
