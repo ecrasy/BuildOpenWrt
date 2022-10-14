@@ -2,7 +2,7 @@
  # File Name: test_build.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-14 04:37:48 UTC
+ # Modified Time: 2022-10-14 05:44:01 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -189,6 +189,8 @@ jobs:
 
       - name: Delete Toolchain Image From Release
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete $TOOLCHAIN_TAG -y
           git push origin :refs/tags/$TOOLCHAIN_TAG
@@ -198,6 +200,7 @@ jobs:
         env:
           NOTES: Toolchain for x86_64 built @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create $TOOLCHAIN_TAG --title $TOOLCHAIN_NAME --notes $NOTES --target $COMMIT output/*
 
