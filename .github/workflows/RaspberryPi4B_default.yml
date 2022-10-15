@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-15 03:25:01 UTC
+ # Modified Time: 2022-10-15 03:36:51 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -83,7 +83,7 @@ jobs:
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo -E apt-get update
-          sudo -E apt-get upgrade -y
+          sudo -E apt-get upgrade -qq -y
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
@@ -296,7 +296,7 @@ jobs:
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo -E apt-get update
-          sudo -E apt-get upgrade -y
+          sudo -E apt-get upgrade -qq -y
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
@@ -372,7 +372,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+          sudo -E apt-get -y purge ghc* zulu* hhvm* llvm* google* dotnet* openjdk* mysql* php* azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
           docker image prune -a -f
@@ -467,7 +467,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo -E apt-get update
-          sudo -E apt-get upgrade -y
+          sudo -E apt-get upgrade -qq -y
           sudo -E apt-get -y install zip unzip rsync
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
