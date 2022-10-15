@@ -50,10 +50,11 @@ env:
 
 jobs:
   Toolchain:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
+      TOOLCHAIN_OUTPUT: ${{ steps.clone.outputs.TOOLCHAIN_OUTPUT }}
       CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
       SOURCE_OWNER: ${{ steps.env.outputs.SOURCE_OWNER }}
       SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
@@ -79,20 +80,27 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get upgrade -qq -y
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           mkdir workspace
 
-      - name: Clone Source Code
+      - name: Clone Openwrt Source
         id: clone
         run: |
           git clone $SOURCE_URL -b $SOURCE_BRANCH workspace/openwrt
           cd workspace/openwrt
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_OUTPUT
+
+          mkdir -p $GITHUB_WORKSPACE/output
+          cd $GITHUB_WORKSPACE/output
+          export TOOLCHAIN_OUTPUT="$(pwd)"
+          echo "TOOLCHAIN_OUTPUT=$TOOLCHAIN_OUTPUT" >> $GITHUB_ENV
+          echo "TOOLCHAIN_OUTPUT=$TOOLCHAIN_OUTPUT" >> $GITHUB_OUTPUT
 
       - name: Generate Toolchain Config
         run: |
@@ -131,7 +139,7 @@ jobs:
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_ENV
           echo "DEVICE_PLATFORM=$DEVICE_PLATFORM" >> $GITHUB_OUTPUT
 
-          export TOOLCHAIN_IMAGE="toolchain-$SOURCE_OWNER-$SOURCE_REPO-$SOURCE_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
+          export TOOLCHAIN_IMAGE="toolchain-$DEVICE_TARGET-$DEVICE_SUBTARGET"
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
           echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_OUTPUT
 
@@ -147,7 +155,6 @@ jobs:
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
           echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_OUTPUT
           echo "CURRENT_HASH is $CURRENT_HASH"
-
           export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
           echo "CACHE_HASH is $CACHE_HASH"
           if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
@@ -189,7 +196,7 @@ jobs:
 
   Build:
     needs: [Toolchain]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Combine Disks
@@ -215,7 +222,7 @@ jobs:
           sudo mkfs.btrfs -L combinedisk $LV_DEVNAME
           sudo mount -o compress=zstd $LV_DEVNAME $GITHUB_WORKSPACE
           sudo chown -R runner:runner $GITHUB_WORKSPACE
-          mkdir $GITHUB_WORKSPACE/tmp
+          mkdir -p $GITHUB_WORKSPACE/tmp
           chmod 0777 $GITHUB_WORKSPACE/tmp
           sudo cp -rp /tmp/* $GITHUB_WORKSPACE/tmp
           sudo mount -B $GITHUB_WORKSPACE/tmp /tmp
@@ -237,6 +244,7 @@ jobs:
           echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
 
+
       - name: Checkout
         run: |
           cd $GITHUB_WORKSPACE
@@ -250,10 +258,11 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/openwrt-env)
-          sudo -E apt-get -qq autoremove --purge
-          sudo -E apt-get -qq clean
+          sudo -E apt-get update
+          sudo -E apt-get upgrade -qq -y
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Toolchain Image From Artifacts
@@ -333,15 +342,19 @@ jobs:
       - name: Print Disk Usage
         if: always()
         run: |
-          echo 'lsblk -f'
+          echo "lsblk -f"
           lsblk -f
-          echo '-----'
-          echo 'df -hT'
+          echo -e "============================\n"
+          echo "df -hT"
           df -hT
-          echo '-----'
-          echo 'btrfs filesystem usage'
+          echo -e "============================\n"
+
+      - name: Print Btrfs Usage
+        if: env.COMBINE_DISK == 'true'
+        run: |
+          echo "btrfs filesystem usage"
           sudo btrfs filesystem usage $GITHUB_WORKSPACE
-          echo '-----'
+          echo -e "============================\n"
 
       - name: Upload Bin Archive
         run: |
@@ -349,7 +362,7 @@ jobs:
 
   Upload:
     needs: [Build, Toolchain]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Restore Variables
@@ -375,8 +388,9 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo -E apt-get -qq update
-          sudo -E apt-get -qq install zip unzip rsync
+          sudo -E apt-get update
+          sudo -E apt-get upgrade -qq -y
+          sudo -E apt-get -y install zip unzip rsync
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
       - name: Download Bin Archive
