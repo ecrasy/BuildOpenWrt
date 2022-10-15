@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-15 03:54:14 UTC
+ # Modified Time: 2022-10-15 04:04:25 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -372,7 +372,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo -E apt-get -y purge ghc* zulu* google* dotnet* openjdk* mysql* php* azure-cli firefox powershell
+          sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* openjdk* mysql* php* azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
           docker image prune -a -f
