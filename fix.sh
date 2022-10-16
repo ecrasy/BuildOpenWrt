@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-12 13:48:57 UTC
+# Modified Time: 2022-10-16 00:11:57 UTC
 #########################################################################
 
 
@@ -32,7 +32,7 @@ echo "Remove unused adguardhome binary packages!!!"
 
 # fixing error from https://github.com/openwrt/luci/issues/5373
 # luci-app-statistics: misconfiguration shipped pointing to non-existent directory
-str="option Include '/etc/collectd/conf.d'"
+str="[ \f\r\t\n]*option Include '/etc/collectd/conf.d'"
 cmd="s@$str@#&@"
 sed -ri "$cmd" feeds/luci/applications/luci-app-statistics/root/etc/config/luci_statistics
 echo "Fixing luci-app-statistics error from github.com/openwrt/luci/issues/5373"
