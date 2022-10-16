@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-10-15 23:11:42 UTC
+ # Modified Time: 2022-10-16 03:25:23 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -270,7 +270,6 @@ jobs:
         run: |
           git config --global init.defaultBranch main
           git config --global advice.detachedHead false
-          git config --global pull.rebase false
           echo "CURRENT_BRANCH=$(echo '${{needs.Toolchain.outputs.CURRENT_BRANCH}}')" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$(echo '${{needs.Toolchain.outputs.OPENWRT_ROOT_PATH}}')" >> $GITHUB_ENV
           echo "SOURCE_OWNER=$(echo '${{needs.Toolchain.outputs.SOURCE_OWNER}}')" >> $GITHUB_ENV
@@ -280,7 +279,6 @@ jobs:
           echo "DEVICE_SUBTARGET=$(echo '${{needs.Toolchain.outputs.DEVICE_SUBTARGET}}')" >> $GITHUB_ENV
           echo "TOOLCHAIN_IMAGE=$(echo '${{needs.Toolchain.outputs.TOOLCHAIN_IMAGE}}')" >> $GITHUB_ENV
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
-
 
       - name: Checkout
         run: |
@@ -321,8 +319,6 @@ jobs:
           mkdir openwrt-ro openwrt workdir overlay
           sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd $OPENWRT_ROOT_PATH
-          git pull
 
       - name: Prepare Toolchain Image From Releases
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true'
@@ -336,8 +332,6 @@ jobs:
           mkdir openwrt-ro openwrt workdir overlay
           sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
           sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-          cd $OPENWRT_ROOT_PATH
-          git pull
 
       - name: Load Custom Feeds
         run: |
