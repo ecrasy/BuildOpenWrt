@@ -1,0 +1,27 @@
+--- a/Lib/platform.py	2022-03-24 05:12:08.000000000 +0800
++++ b/Lib/platform.py	2022-10-19 16:38:58.106011790 +0800
+@@ -1071,11 +1071,21 @@ def _sys_version(sys_version=None):
+ 
+     else:
+         # CPython
++        sys_version = sys_version.replace("\\n", "")
+         match = _sys_version_parser.match(sys_version)
+         if match is None:
+-            raise ValueError(
+-                'failed to parse CPython sys.version: %s' %
+-                repr(sys_version))
++            sv_parser = re.compile(
++                r'([\w.+]+)\s*'
++                r'\(#?([^,]+)'
++                r'(?:,\s*([\w-]+)'
++                r'(?:,\s*([\w:]*))?)?\)\s*'
++                r'\[([^\]]+)\]?'
++                ,re.ASCII)
++            match = sv_parser.match(sys_version)
++            if match is None:
++                raise ValueError(
++                    'failed to parse CPython sys.version: %s' %
++                    repr(sys_version))
+         version, buildno, builddate, buildtime, compiler = \
+               match.groups()
+         name = 'CPython'

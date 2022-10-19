@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-16 00:11:57 UTC
+# Modified Time: 2022-10-19 10:50:42 UTC
 #########################################################################
 
 
@@ -41,6 +41,10 @@ echo "Fixing luci-app-statistics error from github.com/openwrt/luci/issues/5373"
 touch package/base-files/files/etc/bench.log
 chmod 0666 package/base-files/files/etc/bench.log
 echo "Touching coremark log file to fix uhttpd error!!!"
+
+# fixing python3.9.12 sys version parse error
+cp $GITHUB_WORKSPACE/data/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
+echo "Fixing python host compile install error!!!"
 
 echo "FIX Completed!!!"
 
