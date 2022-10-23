@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-23 04:08:39 UTC
+# Modified Time: 2022-10-23 05:11:09 UTC
 #########################################################################
 
 
@@ -15,8 +15,8 @@ function prompter() {
     echo -e "********************************************\n"
 }
 
-configs_dir="$HOME/code/BuildOpenWrt/configs"
-openwrt_dir="$HOME/code/openwrt"
+configs_dir=""
+openwrt_dir=""
 if [ "$1" != "" ] 
 then
     configs_dir=$1
@@ -28,6 +28,8 @@ fi
 
 configs_dir=$(echo $configs_dir | sed 's:/*$::')
 openwrt_dir=$(echo $openwrt_dir | sed 's:/*$::')
+[ -z "$configs_dir" ] && exit 0
+[ -z "$openwrt_dir" ] && exit 0
 
 configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' -printf "%f\n" | sort -f)
 
