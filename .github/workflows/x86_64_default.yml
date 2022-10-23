@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-10-22 13:30:19 UTC
+ # Modified Time: 2022-10-23 00:45:52 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -37,6 +37,7 @@ on:
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
   SOURCE_BRANCH: master
+  CLONE_DEPTH: 200
   CONFIG_FILE: configs/x86_64.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
@@ -93,7 +94,7 @@ jobs:
       - name: Clone Openwrt Source
         id: clone
         run: |
-          git clone --depth 120 $SOURCE_URL -b $SOURCE_BRANCH workspace/openwrt
+          git clone --depth $CLONE_DEPTH $SOURCE_URL -b $SOURCE_BRANCH workspace/openwrt
           cd workspace/openwrt
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_ENV
           echo "OPENWRT_ROOT_PATH=$PWD" >> $GITHUB_OUTPUT
