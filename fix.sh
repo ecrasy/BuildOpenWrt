@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-25 01:28:34 UTC
+# Modified Time: 2022-10-25 11:06:21 UTC
 #########################################################################
 
 
@@ -28,10 +28,10 @@
 
 # fix error from https://github.com/openwrt/luci/issues/5373
 # luci-app-statistics: misconfiguration shipped pointing to non-existent directory
-str="[ \f\r\t\n]*option Include '/etc/collectd/conf.d'"
+str="^[^#]*option Include '/etc/collectd/conf.d'"
 cmd="s@$str@#&@"
 sed -ri "$cmd" feeds/luci/applications/luci-app-statistics/root/etc/config/luci_statistics
-echo "Fix luci-app-statistics error from github.com/openwrt/luci/issues/5373"
+echo "Fix luci-app-statistics ref wrong path error"
 
 # fix stupid coremark benchmark error
 touch package/base-files/files/etc/bench.log
