@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-25 01:20:16 UTC
+# Modified Time: 2022-10-25 01:28:34 UTC
 #########################################################################
 
 
@@ -39,9 +39,7 @@ chmod 0666 package/base-files/files/etc/bench.log
 echo "Touch coremark log file to fix uhttpd error!!!"
 
 # fix python3.9.12 sys version parse error
-cd $GITHUB_WORKSPACE/data
-cp patches/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
-cd -
+cp $GITHUB_WORKSPACE/data/patches/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
 echo "Fix python host compile install error!!!"
 
 echo "FIX Completed!!!"
