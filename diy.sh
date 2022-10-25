@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2022-10-25 03:04:20 UTC
+# Modified Time: 2022-10-25 03:42:04 UTC
 #########################################################################
 
 
@@ -36,6 +36,7 @@ chmod 0755 package/base-files/files/etc/hotplug.d/iface/99-ipv6
 echo "Add 99-ipv6"
 
 #Add base config files
+mkdir -p package/base-files/files/etc/config
 cp -f $GITHUB_WORKSPACE/data/etc/config/* package/base-files/files/etc/config/
 echo "Add base config files"
 
