@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-10-23 00:46:20 UTC
+ # Modified Time: 2022-10-25 23:50:04 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -38,7 +38,7 @@ env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
   SOURCE_BRANCH: master
   CLONE_DEPTH: 200
-  CONFIG_FILE: configs/x86_64_kmod.config
+  CONFIG_FILE: configs/x86_64.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
@@ -417,8 +417,6 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           mkdir -p files/www/snapshots
           cp -r bin/targets files/www/snapshots
-          cp -r bin/packages files/www/snapshots
-
           make package/install -j$(nproc) || make package/install -j1 V=s
           make target/install -j$(nproc) || make target/install -j1 V=s
           make json_overview_image_info

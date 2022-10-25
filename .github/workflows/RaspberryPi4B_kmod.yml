@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-10-23 00:45:26 UTC
+ # Modified Time: 2022-10-25 23:48:57 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -38,7 +38,7 @@ env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede
   SOURCE_BRANCH: master
   CLONE_DEPTH: 200
-  CONFIG_FILE: configs/RaspberryPi4B_kmod.config
+  CONFIG_FILE: configs/RaspberryPi4B.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
@@ -418,8 +418,6 @@ jobs:
           echo "dtparam=i2c_arm=on,audio=on" >> target/linux/bcm27xx/image/config.txt
           mkdir -p files/www/snapshots
           cp -r bin/targets files/www/snapshots
-          cp -r bin/packages files/www/snapshots
-
           make package/install -j$(nproc) || make package/install -j1 V=s
           make target/install -j$(nproc) || make target/install -j1 V=s
           make json_overview_image_info
