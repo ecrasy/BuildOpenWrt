@@ -3,48 +3,46 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-19 10:50:42 UTC
+# Modified Time: 2022-10-25 01:20:16 UTC
 #########################################################################
 
 
 #!/bin/bash
 
-# fixing cjdns compile error
+# fix cjdns compile error
 # sed -i 's/ -Wno-error=stringop-overflow//g' package/feeds/routing/cjdns/Makefile
 # sed -i 's/ -Wno-error=stringop-overread//g' package/feeds/routing/cjdns/Makefile
-# echo "Fixing cjdns makefile error!!!"
+# echo "Fix cjdns makefile error!!!"
 
-# fixing e2guardian compile error
+# fix e2guardian compile error
 # sed -i 's/-fno-rtti/-fno-rtti -std=c++14/g' package/network/services/e2guardian/Makefile
-# echo "Fixing e2guardian compile error!!!"
+# echo "Fix e2guardian compile error!!!"
 
-# fixing lua-eco recursive depend error
+# fix lua-eco recursive depend error
 # sed -i 's/ +PACKAGE_libwolfssl:libwolfssl//g' feeds/packages/lang/lua-eco/Makefile
-# echo "Fixing lua-eco config error!!!"
+# echo "Fix lua-eco config error!!!"
 
-# fixing qtbase package hash
+# fix qtbase package hash
 # sed -i '/official_releases/d' package/feeds/packages/qtbase/Makefile
-# echo "Fixing qtbase hash error!!!"
+# echo "Fix qtbase hash error!!!"
 
-# remove adguardhome dup package
-rm -rf feeds/CustomPkgs/adguardhome
-echo "Remove unused adguardhome binary packages!!!"
-
-# fixing error from https://github.com/openwrt/luci/issues/5373
+# fix error from https://github.com/openwrt/luci/issues/5373
 # luci-app-statistics: misconfiguration shipped pointing to non-existent directory
 str="[ \f\r\t\n]*option Include '/etc/collectd/conf.d'"
 cmd="s@$str@#&@"
 sed -ri "$cmd" feeds/luci/applications/luci-app-statistics/root/etc/config/luci_statistics
-echo "Fixing luci-app-statistics error from github.com/openwrt/luci/issues/5373"
+echo "Fix luci-app-statistics error from github.com/openwrt/luci/issues/5373"
 
-# fixing stupid coremark error
+# fix stupid coremark benchmark error
 touch package/base-files/files/etc/bench.log
 chmod 0666 package/base-files/files/etc/bench.log
-echo "Touching coremark log file to fix uhttpd error!!!"
+echo "Touch coremark log file to fix uhttpd error!!!"
 
-# fixing python3.9.12 sys version parse error
-cp $GITHUB_WORKSPACE/data/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
-echo "Fixing python host compile install error!!!"
+# fix python3.9.12 sys version parse error
+cd $GITHUB_WORKSPACE/data
+cp patches/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
+cd -
+echo "Fix python host compile install error!!!"
 
 echo "FIX Completed!!!"
 
