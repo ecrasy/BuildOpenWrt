@@ -1,0 +1,18 @@
+
+config samba
+	option charset 'UTF-8'
+	option name 'OpenWrt'
+	option homes '0'
+	option description 'Share on OpenWRT'
+	option interface 'lan'
+	option workgroup 'WG-SHARE'
+
+config sambashare
+	option name 'sdb'
+	option path '/mnt/sdb'
+	option read_only 'no'
+	option guest_ok 'yes'
+	option force_root '1'
+	option create_mask '0666'
+	option dir_mask '0777'
+

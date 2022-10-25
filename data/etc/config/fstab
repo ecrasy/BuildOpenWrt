@@ -1,0 +1,24 @@
+
+config global
+	option anon_swap '0'
+	option anon_mount '0'
+	option auto_swap '1'
+	option auto_mount '1'
+	option delay_root '5'
+	option check_fs '0'
+
+config mount
+	option target '/boot'
+	option uuid '1234-ABCD'
+	option enabled '0'
+
+config mount
+	option target '/'
+	option uuid 'ff313567-e9f1-5a5d-9895-3ba130b4a864'
+	option enabled '0'
+
+config mount
+	option target '/mnt/sdb'
+	option uuid '314af178-df60-4849-9266-52ba69538cbb'
+	option enabled '1'
+
