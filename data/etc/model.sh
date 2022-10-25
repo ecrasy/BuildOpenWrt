@@ -11,7 +11,7 @@
 #!/bin/bash
 
 str="Default string Default string/Default string - "
-rpl="Intel(R) J4125"
+rpl="Intel(R) J4125 - "
 cmd="s@$str@$rpl@"
 sed -i "$cmd" /tmp/sysinfo/model
 
