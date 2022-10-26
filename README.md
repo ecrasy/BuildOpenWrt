@@ -12,7 +12,9 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
 此时可以尝试在**网络->接口->LAN->IPv6设置**中，  
 关闭**路由通告服务**和**DHCPv6 服务**，  
 可以恢复梯子功能。  
-逆操作可以重新开启IPv6功能。
+逆操作可以重新开启IPv6功能。  
+**开启DHCPv6：**  
+![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/DHCPv6.jpg)  
 
 ## 支持X86-64和树莓派4B
 1. configs文件夹中的config配置文件，  
