@@ -25,7 +25,6 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
 3. RaspberryPi4B：树莓派4B系统格式workflows。  
 4. 该系列workflows会自动保存toolchain至release。  
 5. 重复编译时会自动拉取已经编译保存的toolchain。  
-6. kmod的workflows打包了Lede大的代码库里所有的packages。  
 
 ## 定制脚本
 1. feeds.sh：修改该文件添加额外的packages，  
