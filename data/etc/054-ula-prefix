@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-10-25 00:40:14 UTC
+# Modified Time: 2022-10-26 01:31:53 UTC
 #########################################################################
 
 
@@ -31,6 +31,6 @@ then
     /sbin/ifup lan
 fi
 
-sleep 3s
+sleep 1s
 source /etc/model.sh
 
