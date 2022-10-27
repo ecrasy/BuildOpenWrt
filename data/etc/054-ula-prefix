@@ -3,34 +3,41 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-10-26 02:00:25 UTC
+# Modified Time: 2022-10-27 11:13:32 UTC
 #########################################################################
 
-
-#!/bin/bash
+#!/bin/sh
 
 [ "$ACTION" = ifup ] || exit 0
 [ "$INTERFACE" = wan ] || exit 0
 
-sleep 2s
+sleep 1s
 
-prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
-ula_prefix=""
-
-echo $ula_prefix > /tmp/_ula_prefix
-for prefix in $prefixs
+for iptry in `seq 1 8`
 do
-    ula_prefix=$prefix
-    echo $ula_prefix >> /tmp/_ula_prefix
+    prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
+    ula_prefix=""
+
+    echo $ula_prefix > /tmp/_ula_prefix
+    for prefix in $prefixs
+    do
+        ula_prefix=$prefix
+        echo $ula_prefix >> /tmp/_ula_prefix
+    done
+
+    ula_prefix=$(echo $ula_prefix)
+    echo "tried $iptry times looking for ula prefix" >> /tmp/_ula_prefix
+    if [ ! -z "$ula_prefix" ]
+    then
+        echo "ula prefix found $iptry" >> /tmp/_ula_prefix
+        uci set network.globals.ula_prefix="$ula_prefix"
+        uci commit network
+        /sbin/ifup lan
+        break
+    fi
+
+    sleep 1s
 done
 
-if [ ! -z "$ula_prefix" ]
-then
-    uci set network.globals.ula_prefix="$ula_prefix"
-    uci commit network
-    /sbin/ifup lan
-fi
-
-sleep 1s
 source /etc/model.sh
 
