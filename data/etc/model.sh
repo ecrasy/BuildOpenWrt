@@ -4,7 +4,7 @@
 # Description: replace default model string with empty string
 # will be called in wlan up event
 # Created Time: 2022-07-25 01:30:41 UTC
-# Modified Time: 2022-10-24 04:18:51 UTC
+# Modified Time: 2022-10-27 00:43:42 UTC
 #########################################################################
 
 
@@ -19,4 +19,12 @@ str="Default string Default string"
 rpl="Intel(R) J4125"
 cmd="s@$str@$rpl@"
 sed -i "$cmd" /tmp/sysinfo/model
+
+# remove custom feeds form /etc/opkg/distfeeds.conf
+# they are not in the remote distfeeds repo
+sed -i '/PWpackages/d' /etc/opkg/distfeeds.conf
+sed -i '/PWluci/d' /etc/opkg/distfeeds.conf
+sed -i '/Passwall2/d' /etc/opkg/distfeeds.conf
+sed -i '/ssrp/d' /etc/opkg/distfeeds.conf
+sed -i '/CustomPkgs/d' /etc/opkg/distfeeds.conf
 
