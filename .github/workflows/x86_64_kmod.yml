@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-10-25 23:50:04 UTC
+ # Modified Time: 2022-10-30 10:12:07 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -208,9 +208,9 @@ jobs:
             echo "try to delete old toolchain release assets: $assets"
             for asset in $assets
             do
-              gh release delete-asset "$TOOLCHAIN_TAG" $asset -y
+              gh release delete-asset "$TOOLCHAIN_TAG" $asset --yes
             done
-            gh release delete "$TOOLCHAIN_TAG" -y
+            gh release delete "$TOOLCHAIN_TAG" --cleanup-tag --yes
           fi
 
       - name: Upload Toolchain Image To Release
@@ -516,9 +516,9 @@ jobs:
             echo "try to delete old image release assets: $assets"
             for asset in $assets
             do
-              gh release delete-asset "$IMAGE_TAG" $asset -y
+              gh release delete-asset "$IMAGE_TAG" $asset --yes
             done
-            gh release delete "$IMAGE_TAG" -y
+            gh release delete "$IMAGE_TAG" --cleanup-tag --yes
           fi
 
       - name: Deploy Files To Release
