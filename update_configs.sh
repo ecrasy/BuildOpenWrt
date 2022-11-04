@@ -3,11 +3,13 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-10-23 05:11:09 UTC
+# Modified Time: 2022-11-04 12:37:40 UTC
 #########################################################################
 
 
 #!/bin/bash
+
+set -e
 
 function prompter() {
     echo -e "\n********************************************\n$1"
@@ -26,8 +28,8 @@ then
     openwrt_dir=$2
 fi
 
-configs_dir=$(echo $configs_dir | sed 's:/*$::')
-openwrt_dir=$(echo $openwrt_dir | sed 's:/*$::')
+configs_dir=$(echo $configs_dir | xargs realpath -s | sed 's:/*$::')
+openwrt_dir=$(echo $openwrt_dir | xargs realpath -s | sed 's:/*$::')
 [ -z "$configs_dir" ] && exit 0
 [ -z "$openwrt_dir" ] && exit 0
 
@@ -35,13 +37,13 @@ configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' -printf "%f\n" 
 
 [ -z "$configs" ] && exit 0
 
-prompt="Configs found:"
+prompt="Configs dir: $configs_dir\nConfigs found:"
 cmd="echo $configs"
 prompter "$prompt" "$cmd"
 
 cd $openwrt_dir
 
-prompt="Updating openwrt source code:"
+prompt="Openwrt source dir: $openwrt_dir\nUpdating openwrt source code:"
 cmd="git pull"
 prompter "$prompt" "$cmd"
 
