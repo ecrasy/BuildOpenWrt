@@ -4,11 +4,11 @@
 # Description: replace default model string with empty string
 # will be called in wlan up event
 # Created Time: 2022-07-25 01:30:41 UTC
-# Modified Time: 2022-10-27 00:43:42 UTC
+# Modified Time: 2022-11-04 12:18:32 UTC
 #########################################################################
 
 
-#!/bin/bash
+#!/bin/sh
 
 str="Default string Default string/Default string - "
 rpl="Intel(R) J4125 - "
