@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-10-30 10:10:54 UTC
+ # Modified Time: 2022-11-06 04:05:27 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -169,14 +169,14 @@ jobs:
         run: |
           cd $OPENWRT_ROOT_PATH
           echo "$(nproc) threads compile tools"
-          make tools/compile -j$(nproc) || make tools/compile -j1 V=s
+          make tools/compile -j$(nproc)
 
       - name: Compile Toolchain
         if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
         run: |
           cd $OPENWRT_ROOT_PATH
           echo "$(nproc) threads compile toolchain"
-          make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
+          make toolchain/compile -j$(nproc)
           rm -rf .config* dl bin
 
       - name: Generate Toolchain Image
@@ -205,7 +205,7 @@ jobs:
         run: |
           export assets=$(gh release view "$TOOLCHAIN_TAG" --json "assets" --jq ".assets.[].name")
           if [ ! -z "$assets" ]; then
-            echo "try to delete old toolchain release assets: $assets"
+            echo -e "try to delete old toolchain release assets:\n$assets"
             for asset in $assets
             do
               gh release delete-asset "$TOOLCHAIN_TAG" $asset --yes
@@ -227,8 +227,8 @@ jobs:
             echo "create release with tag:$TOOLCHAIN_TAG to $COMMIT"
             for asset in $assets
             do
-              gh release upload "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset"
-              echo "upload $asset to release @ tag:$TOOLCHAIN_TAG"
+              gru=$(gh release upload --clobber "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset")
+              echo "upload $asset to release at tag:$TOOLCHAIN_TAG end with result:$gru"
             done
           fi
 
@@ -380,7 +380,7 @@ jobs:
         id: download
         run: |
           cd $OPENWRT_ROOT_PATH
-          make download -j8 || make download -j1 V=s
+          make download -j8
           df -hT
 
       - name: Compile Packages
@@ -389,8 +389,8 @@ jobs:
           echo "$(nproc) threads compile packages"
           make buildinfo
           make diffconfig buildversion feedsversion
-          make target/compile -j$(nproc) IGNORE_ERRORS="m n" || make target/compile -j1 V=s IGNORE_ERRORS=1
-          make package/compile -j$(nproc) IGNORE_ERRORS="m n" || make package/compile -j1 V=s IGNORE_ERRORS=1
+          make target/compile -j$(nproc) IGNORE_ERRORS="m n"
+          make package/compile -j$(nproc) IGNORE_ERRORS="m n"
           make package/index
 
       - name: Generate Firmware
@@ -398,8 +398,8 @@ jobs:
         run: |
           cd $OPENWRT_ROOT_PATH
           echo "dtparam=i2c_arm=on,audio=on" >> target/linux/bcm27xx/image/config.txt
-          make package/install -j$(nproc) || make package/install -j1 V=s
-          make target/install -j$(nproc) || make target/install -j1 V=s
+          make package/install -j$(nproc)
+          make target/install -j$(nproc)
           make json_overview_image_info
           make checksum
 
@@ -494,7 +494,7 @@ jobs:
         run: |
           export assets=$(gh release view "$IMAGE_TAG" --json "assets" --jq ".assets.[].name")
           if [ ! -z "$assets" ]; then
-            echo "try to delete old image release assets: $assets"
+            echo -e "try to delete old image release assets:\n$assets"
             for asset in $assets
             do
               gh release delete-asset "$IMAGE_TAG" $asset --yes
@@ -518,8 +518,8 @@ jobs:
             echo "create release with tag:$IMAGE_TAG to $COMMIT"
             for asset in $assets
             do
-              gh release upload "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset"
-              echo "upload $asset to release @ tag:$IMAGE_TAG"
+              gru=$(gh release upload --clobber "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset")
+              echo "upload $asset to release at tag:$IMAGE_TAG end with result:$gru"
             done
           fi
 
