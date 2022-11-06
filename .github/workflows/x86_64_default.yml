@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-11-06 04:06:09 UTC
+ # Modified Time: 2022-11-06 04:13:59 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -227,7 +227,7 @@ jobs:
             echo "create release with tag:$TOOLCHAIN_TAG to $COMMIT"
             for asset in $assets
             do
-              gru=$(gh release upload --clobber "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset")
+              export gru=$(gh release upload --clobber "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset")
               echo "upload $asset to release at tag:$TOOLCHAIN_TAG end with result:$gru"
             done
           fi
@@ -517,7 +517,7 @@ jobs:
             echo "create release with tag:$IMAGE_TAG to $COMMIT"
             for asset in $assets
             do
-              gru=$(gh release upload --clobber "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset")
+              export gru=$(gh release upload --clobber "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset")
               echo "upload $asset to release at tag:$IMAGE_TAG end with result:$gru"
             done
           fi
