@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2022-11-06 04:13:02 UTC
+ # Modified Time: 2022-11-06 23:49:23 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -223,12 +223,25 @@ jobs:
         run: |
           assets=$(ls "$TOOLCHAIN_OUTPUT")
           if [ ! -z "$assets" ]; then
-            gh release create "$TOOLCHAIN_TAG" --title "$TOOLCHAIN_NAME" --notes "$NOTES" --target "$COMMIT"
-            echo "create release with tag:$TOOLCHAIN_TAG to $COMMIT"
+            for ctry in `seq 1 30` 
+            do
+              sleep 5
+              export grc=$(gh release create "$TOOLCHAIN_TAG" --title "$TOOLCHAIN_NAME" --notes "$NOTES" --target "$COMMIT" 2>egrc)
+              export egrc=$(<egrc)
+              if [ -z "$egrc" ]; then
+                break
+              else
+                echo -e "failed create release: $egrc!\ntry delete old release and cleanup tag"
+                gh release delete "$TOOLCHAIN_TAG" --cleanup-tag --yes
+                echo "try to create release again with tag:$TOOLCHAIN_TAG to $COMMIT"
+              fi
+            done
+            echo "release successfully created to $COMMIT with tag:$TOOLCHAIN_TAG"
+
             for asset in $assets
             do
               export gru=$(gh release upload --clobber "$TOOLCHAIN_TAG" "$TOOLCHAIN_OUTPUT/$asset")
-              echo "upload $asset to release at tag:$TOOLCHAIN_TAG end with result:$gru"
+              echo "upload $asset to release at tag:$TOOLCHAIN_TAG $gru"
             done
           fi
 
@@ -534,12 +547,25 @@ jobs:
         run: |
           assets=$(ls "$IMAGE_OUTPUT")
           if [ ! -z "$assets" ]; then
-            gh release create "$IMAGE_TAG" --title "$IMAGE_NAME" --notes "$NOTES" --target "$COMMIT"
-            echo "create release with tag:$IMAGE_TAG to $COMMIT"
+            for ctry in `seq 1 30`
+            do
+              sleep 5
+              export grc=$(gh release create "$IMAGE_TAG" --title "$IMAGE_NAME" --notes "$NOTES" --target "$COMMIT" 2> egrc)
+              export egrc=$(<egrc)
+              if [ -z "$egrc" ]; then
+                break
+              else
+                echo -e "failed create release: $egrc!\ntry delete old release and cleanup tag"
+                gh release delete "$IMAGE_TAG" --cleanup-tag --yes
+                echo "try to create release again with tag:$IMAGE_TAG to $COMMIT"
+              fi
+            done
+            echo "release successfully created to $COMMIT with tag:$IMAGE_TAG"
+
             for asset in $assets
             do
               export gru=$(gh release upload --clobber "$IMAGE_TAG" "$IMAGE_OUTPUT/$asset")
-              echo "upload $asset to release at tag:$IMAGE_TAG end with result:$gru"
+              echo "upload $asset to release at tag:$IMAGE_TAG $gru"
             done
           fi
 
