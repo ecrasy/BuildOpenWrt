@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-10-25 11:06:21 UTC
+# Modified Time: 2022-11-08 22:42:37 UTC
 #########################################################################
 
 
@@ -41,6 +41,11 @@ echo "Touch coremark log file to fix uhttpd error!!!"
 # fix python3.9.12 sys version parse error
 cp $GITHUB_WORKSPACE/data/patches/lib-platform-sys-version.patch feeds/packages/lang/python/python3/patches/
 echo "Fix python host compile install error!!!"
+
+# fixing dnsmasq compile error
+# from: https://github.com/openwrt/openwrt/issues/9043
+cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch package/network/services/dnsmasq/patches/
+echo "Fix dnsmasq issue 9043"
 
 echo "FIX Completed!!!"
 
