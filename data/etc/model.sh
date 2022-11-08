@@ -10,7 +10,12 @@
 
 #!/bin/sh
 
-model=$(lscpu | grep "BIOS Model name" | sed -e "s|BIOS Model name:||g")
+model=$(lscpu | grep "^Model name:" | sed -e "s|Model name:||g")
+if [ -z "$model" ]
+then
+    model=$(lscpu | grep "^BIOS Model name:" | sed -e "s|BIOS Model name:||g")
+fi
+
 if [ -z "$model" ]
 then
     model="GenuineIntel"
