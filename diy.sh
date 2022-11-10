@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2022-11-02 13:23:17 UTC
+# Modified Time: 2022-11-10 02:17:36 UTC
 #########################################################################
 
 
@@ -49,5 +49,5 @@ echo "Add 054-ula-prefix"
 sed -i '/distfeeds/d' package/lean/default-settings/files/zzz-default-settings
 echo "Remove customization of distfeeds.conf, cant trust them btw"
 
-echo "DIY Completed!!!"
+echo -e "DIY Completed!!!\n"
 

@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-11-08 22:42:37 UTC
+# Modified Time: 2022-11-10 04:48:39 UTC
 #########################################################################
 
 
@@ -47,5 +47,15 @@ echo "Fix python host compile install error!!!"
 cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch package/network/services/dnsmasq/patches/
 echo "Fix dnsmasq issue 9043"
 
-echo "FIX Completed!!!"
+# make minidlna depends on libffmpeg-full instead of libffmpeg
+# little bro ffmpeg mini custom be gone
+sed -i "s/libffmpeg /libffmpeg-full /g" feeds/packages/multimedia/minidlna/Makefile
+echo "Make minidlna depends on libffmpeg-full instead of libffmpeg"
+
+# make cshark depends on libustream-openssl instead of libustream-mbedtls
+# i fucking hate stupid mbedtls so much, be gone
+sed -i "s/libustream-mbedtls/libustream-openssl/g" feeds/packages/net/cshark/Makefile
+echo "Make cshark depends on libustream-openssl instead of libustream-mbedtls"
+
+echo -e "FIX Completed!!!\n"
 
