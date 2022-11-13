@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2022-11-10 02:17:36 UTC
+# Modified Time: 2022-11-13 02:07:22 UTC
 #########################################################################
 
 
@@ -27,6 +27,10 @@ echo "Change default shell from ash to bash"
 rm -rf package/base-files/files/etc/banner
 cp $GITHUB_WORKSPACE/data/etc/banner package/base-files/files/etc/
 echo "Replace default ssh banner"
+
+# Replace fgrep with grep -F in /etc/profile
+sed -i 's/fgrep -sq/grep -Fsq/g' package/base-files/files/etc/profile
+echo "Replace fgrep with grep -F in /etc/profile"
 
 # Add model.sh to remove annoying board name for Intel J4125
 cp $GITHUB_WORKSPACE/data/etc/model.sh package/base-files/files/etc/
