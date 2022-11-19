@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-11-10 04:48:39 UTC
+# Modified Time: 2022-11-19 08:47:57 UTC
 #########################################################################
 
 
@@ -44,8 +44,8 @@ echo "Fix python host compile install error!!!"
 
 # fixing dnsmasq compile error
 # from: https://github.com/openwrt/openwrt/issues/9043
-cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch package/network/services/dnsmasq/patches/
-echo "Fix dnsmasq issue 9043"
+# cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch package/network/services/dnsmasq/patches/
+# echo "Fix dnsmasq issue 9043"
 
 # make minidlna depends on libffmpeg-full instead of libffmpeg
 # little bro ffmpeg mini custom be gone
