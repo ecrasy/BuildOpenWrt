@@ -2,6 +2,19 @@
 Build LEDE OpenWrt with GitHub actions  
 [官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
 
+## DNSMASQ V2.87
+最新版本的dnsmasq v2.87和passwall有一点点的兼容性问题  
+系统重启之后，需要手动重启dnsmasq  
+**/etc/init.d/dnsmasq restart**  
+这个问题应该和那个分流模块无法使用的BUG差不多  
+作者看起来也没有修复的意思  
+将就着用吧  
+或许哪天我自己写个类passwall  
+完全抛弃这些代理算法  
+只用tls 443  
+这些代理算法就跟大学作业似的  
+在GFW面前不堪一击  
+
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
 默认开启支持IPv6路由功能。  
