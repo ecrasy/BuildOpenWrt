@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2022-11-12 11:31:28 UTC
+ # Modified Time: 2022-11-26 13:12:48 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -44,7 +44,7 @@ env:
   FEEDS_SH: feeds.sh
   IMAGE_TAG: RaspberryPi4B
   TOOLCHAIN_TAG: toolchain-bcm2711
-  TOOLCHAIN_NAME: Toolchain-image-bcm2711
+  TOOLCHAIN_NAME: Toolchain-bcm2711
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true

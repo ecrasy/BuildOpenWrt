@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2022-11-12 11:32:44 UTC
+ # Modified Time: 2022-11-26 13:13:12 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -44,7 +44,7 @@ env:
   FEEDS_SH: feeds.sh
   IMAGE_TAG: x86_64
   TOOLCHAIN_TAG: toolchain-x86_64
-  TOOLCHAIN_NAME: Toolchain-image-x86_64
+  TOOLCHAIN_NAME: Toolchain-x86_64
   TOOLCHAIN_RELEASE_UPLOAD: true
   FIRMWARE_RELEASE_UPLOAD: true
   FREE_UP_DISK: true
