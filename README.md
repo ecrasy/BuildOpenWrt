@@ -3,9 +3,7 @@ Build LEDE OpenWrt with GitHub actions
 [官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
 
 ## DNSMASQ V2.87
-最新版本的dnsmasq v2.87可能有一点兼容性问题  
-系统重启之后，需要手动重启dnsmasq  
-**/etc/init.d/dnsmasq restart**  
+Lede的dnsmasq v2.87又回退到了v2.86  
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
