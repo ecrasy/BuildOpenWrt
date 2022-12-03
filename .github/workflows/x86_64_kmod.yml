@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2022-11-26 13:13:22 UTC
+ # Modified Time: 2022-12-03 01:10:02 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -42,7 +42,8 @@ env:
   DIY_SH: diy.sh
   FIX_SH: fix.sh
   FEEDS_SH: feeds.sh
-  IMAGE_TAG: x86_64-Kmod
+  IMAGE_TAG: firmware-x86_64-kmod
+  IMAGE_NAME: Firmware-x86_64-Kmod
   TOOLCHAIN_TAG: toolchain-x86_64
   TOOLCHAIN_NAME: Toolchain-x86_64
   TOOLCHAIN_RELEASE_UPLOAD: true
@@ -538,7 +539,6 @@ jobs:
         if: env.FIRMWARE_RELEASE_UPLOAD == 'true'
         env:
           DEBIAN_FRONTEND: noninteractive
-          IMAGE_NAME: Firmware-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}-Kmod
           NOTES: Firmware for x86_64 built with kmod @ ${{ env.BUILD_DATE }}
           COMMIT: ${{ env.CURRENT_BRANCH }}
           IMAGE_OUTPUT: ${{ env.OPENWRT_ROOT_PATH }}/bin/targets/${{ env.DEVICE_TARGET }}/${{ env.DEVICE_SUBTARGET }}
