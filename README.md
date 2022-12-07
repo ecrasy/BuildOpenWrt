@@ -14,8 +14,8 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
 有些是同一个网站只有某些子路径会有访问问题，  
 此时可以尝试在**网络->接口->LAN->IPv6设置**中，  
 关闭**路由通告服务**和**DHCPv6 服务**，  
-可以恢复梯子功能。  
-逆操作可以重新开启IPv6功能。  
+暂时恢复梯子功能。  
+逆操作可以重新开启IPv6。  
 **开启DHCPv6：**  
 ![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/DHCPv6.jpg)  
 
@@ -37,11 +37,11 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
 3. fix.sh: 修正某些软件包package的编译错误。  
 
 ## Release固件发布
-1. openwrt-x86-64-Kmod：预配置本地kmod软件源的x86-64固件。  
-2. openwrt-x86-64：不使用本地kmod软件源的x86-64固件。  
-3. openwrt-RaspberryPi4B-Kmod：预配置本地kmod软件源的树莓派4B固件。  
-4. openwrt-RaspberryPi4B：不使用本地kmod软件源的树莓派4B固件。  
-5. toolchain-image：编译工具链，方便workflow一次编译多次使用。  
+1. Firmware-x86-64-Kmod：预配置本地kmod软件源的x86-64固件。  
+2. Firmware-x86-64：不使用本地kmod软件源的x86-64固件。  
+3. Firmware-bcm2711-Kmod：预配置本地kmod软件源的树莓派4B固件。  
+4. Firmware-bcm2711：不使用本地kmod软件源的树莓派4B固件。  
+5. Toolchain-image：编译工具链，方便workflow一次编译多次使用。  
 
 ## 文件系统固件说明
 1. squash文件系统固件支持系统重置，  
