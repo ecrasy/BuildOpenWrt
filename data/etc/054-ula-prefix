@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: only work in pppoe protocol
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-12-12 08:48:12 UTC
+# Modified Time: 2022-12-12 09:19:35 UTC
 #########################################################################
 
 #!/bin/sh
@@ -40,7 +40,6 @@ do
 
     for prefix in $prefixs
     do
-    	echo "try $prefix"
         if [[ $prefix == *"/$prefix_len"* ]]
         then
             ula_prefix=$prefix
