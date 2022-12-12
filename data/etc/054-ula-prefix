@@ -1,9 +1,9 @@
 #########################################################################
 # File Name: 054-ula-prefix
 # Author: Carbon (ecrasy@gmail.com)
-# Description: feel free to use
+# Description: only work in pppoe protocol
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-12-12 04:04:44 UTC
+# Modified Time: 2022-12-12 08:48:12 UTC
 #########################################################################
 
 #!/bin/sh
@@ -11,7 +11,13 @@
 [ "$ACTION" = ifup ] || exit 0
 [ "$INTERFACE" = wan ] || exit 0
 
-sleep 1s
+proto=$(uci get network.wan.proto)
+if [ "$proto" != "pppoe" ]
+then
+    exit 0
+fi
+
+sleep 2s
 
 for iptry in `seq 1 8`
 do
