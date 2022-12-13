@@ -10,29 +10,28 @@
 
 #!/bin/sh
 
-model=$(lscpu | grep -m1 "^Model name:" | sed -e "s|Model name:||g")
-if [ -z "$model" ]
-then
-    model=$(lscpu | grep -m1 "^BIOS Model name:" | sed -e "s|BIOS Model name:||g")
+
+vendor=$(lscpu | grep -m1 "Vendor ID:" | cut -d':' -f 2)
+if [ -z "$vendor" ]; then
+    vendor=$(lscpu | grep -m1 "BIOS Vendor ID:" | cut -d':' -f 2)
 fi
 
-if [ -z "$model" ]
-then
-    model="GenuineIntel"
+if [ -z "$vendor" ]; then
+    vendor="GenuineIntel"
 fi
 
 str="Default string Default string/Default string"
-rpl="$model"
+rpl="$vendor"
 cmd="s|$str|$rpl|g"
 sed -i "$cmd" /tmp/sysinfo/model
 
 str="Default string Default string"
-rpl="$model"
+rpl="$vendor"
 cmd="s|$str|$rpl|g"
 sed -i "$cmd" /tmp/sysinfo/model
 
 str="Default string"
-rpl="$model"
+rpl="$vendor"
 cmd="s|$str|$rpl|g"
 sed -i "$cmd" /tmp/sysinfo/model
 
