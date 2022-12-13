@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: only work in pppoe protocol
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-12-12 09:19:35 UTC
+# Modified Time: 2022-12-13 00:34:10 UTC
 #########################################################################
 
 #!/bin/sh
@@ -12,8 +12,7 @@
 [ "$INTERFACE" = wan ] || exit 0
 
 proto=$(uci get network.wan.proto)
-if [ "$proto" != "pppoe" ]
-then
+if [ "$proto" != "pppoe" ]; then
     exit 0
 fi
 
@@ -23,11 +22,9 @@ for iptry in `seq 1 8`
 do
     prefix_len=60
     ip6_addr=$(ifconfig pppoe-wan | grep 'inet6 addr:' | grep 'Scope:Global' | sed 's/inet6 addr://' | sed 's/Scope:Global//')
-    if [ ! -z "$ip6_addr" ]
-    then
+    if [ ! -z "$ip6_addr" ]; then
         prefix_len_=$(echo $ip6_addr | cut -d'/' -f 2)
-        if [ ! -z "$prefix_len_" ]
-        then
+        if [ ! -z "$prefix_len_" ]; then
             prefix_len=$prefix_len_
         fi
     fi
@@ -35,27 +32,30 @@ do
     prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
 
     echo -e "ula prefixs found:\n$prefixs" > /tmp/_ula_prefix
-    
+
     ula_prefix=""
 
     for prefix in $prefixs
     do
-        if [[ $prefix == *"/$prefix_len"* ]]
-        then
+        echo "try prefix:$prefix" >> /tmp/_ula_prefix
+        if [[ $prefix == *"/$prefix_len"* ]]; then
             ula_prefix=$prefix
             echo "ula prefix match: $prefix" >> /tmp/_ula_prefix
             break
+        else
+            echo "prefix:$prefix not match" >> /tmp/_ula_prefix
         fi
     done
 
-    if [ ! -z "$ula_prefix" ]
-    then
+    if [ ! -z "$ula_prefix" ]; then
         echo "tried $iptry times looking for ula prefix" >> /tmp/_ula_prefix
         uci set network.globals.ula_prefix="$ula_prefix"
         uci set network.lan.ip6assign="$prefix_len"
         uci commit network
         /sbin/ifup lan
         break
+    else
+        echo -e "found no match in prefixs:\n$prefixs" >> /tmp/_ula_prefix
     fi
 
     sleep 1s
