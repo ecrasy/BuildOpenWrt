@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: only work in pppoe protocol
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2022-12-13 01:21:04 UTC
+# Modified Time: 2022-12-14 00:54:16 UTC
 #########################################################################
 
 #!/bin/sh
@@ -22,7 +22,7 @@ sleep 2s
 for try_times in `seq 1 8`
 do
     prefix_len=60
-    ip6_addr=$(ifconfig pppoe-wan | grep 'inet6 addr:' | grep 'Scope:Global' | sed 's/inet6 addr://' | sed 's/Scope:Global//')
+    ip6_addr=$(ifconfig pppoe-wan | grep -m1 'inet6 addr:.*Scope:Global$' | sed -e 's/^.*inet6 addr://' -e 's/Scope:Global.*$//')
     if [ ! -z "${ip6_addr}" ]; then
         prefix_len_=$(echo $ip6_addr | cut -d'/' -f 2)
         if [ ! -z "${prefix_len_}" ]; then
@@ -33,7 +33,7 @@ do
     echo "try ${try_times} times ... ... ..." > /tmp/_ula_prefix
     echo "prefix length:${prefix_len}" >> /tmp/_ula_prefix
 
-    prefixs=$(ip -6 route show | grep default | sed -e 's/^.*from //g' | sed 's/ via.*$//g')
+    prefixs=$(ip -6 route show | grep 'default' | sed -e 's/^.*from //g' -e 's/ via.*$//g')
 
     echo -e "ula prefixs found:\n${prefixs}" >> /tmp/_ula_prefix
 
@@ -65,5 +65,4 @@ do
     fi
 done
 
-source /etc/model.sh
-
+. /etc/model.sh
