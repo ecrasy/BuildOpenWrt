@@ -1,12 +1,11 @@
 #########################################################################
 # File Name: model.sh
 # Author: Carbon (ecrasy@gmail.com)
-# Description: replace default model string with model name from lscpu
-# will be called in wlan up event
+# Description: Replace model default string with vendor name from lscpu.
+# Description: It will be called in wlan up event.
 # Created Time: 2022-07-25 01:30:41 UTC
-# Modified Time: 2022-12-12 04:05:41 UTC
+# Modified Time: 2022-12-15 01:37:56 UTC
 #########################################################################
-
 
 #!/bin/sh
 
@@ -20,18 +19,9 @@ if [ -z "$vendor" ]; then
     vendor="GenuineIntel"
 fi
 
-str="Default string Default string/Default string"
+str1="Default string Default string/Default string"
+str2="Default string Default string"
+str3="Default string"
 rpl="$vendor"
-cmd="s|$str|$rpl|g"
-sed -i "$cmd" /tmp/sysinfo/model
 
-str="Default string Default string"
-rpl="$vendor"
-cmd="s|$str|$rpl|g"
-sed -i "$cmd" /tmp/sysinfo/model
-
-str="Default string"
-rpl="$vendor"
-cmd="s|$str|$rpl|g"
-sed -i "$cmd" /tmp/sysinfo/model
-
+sed -i -e "s|$str1|$rpl|g" -e "s|$str2|$rpl|g" -e "s|$str3|$rpl|g" -e "s/^[ \t]*//g" /tmp/sysinfo/model
