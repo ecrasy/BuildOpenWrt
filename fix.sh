@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-12-18 07:49:55 UTC
+# Modified Time: 2022-12-18 14:23:25 UTC
 #########################################################################
 
 
@@ -61,5 +61,4 @@ echo "Set hnetd depends on odhcpd-ipv6only instead of odhcpd"
 sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Makefile
 echo "Set shairplay depends on mdnsd instead of libavahi-compat-libdnssd"
 
-echo -e "FIX Completed!!!\n"
-
+echo -e "Fixing Jobs Completed!!!\n"
