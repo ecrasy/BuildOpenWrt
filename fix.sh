@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2022-12-17 14:29:30 UTC
+# Modified Time: 2022-12-18 00:37:18 UTC
 #########################################################################
 
 
@@ -52,6 +52,10 @@ echo "Set minidlna depends on libffmpeg-full instead of libffmpeg"
 # i fucking hate stupid mbedtls so much, be gone
 sed -i "s/libustream-mbedtls/libustream-openssl/g" feeds/packages/net/cshark/Makefile
 echo "Set cshark depends on libustream-openssl instead of libustream-mbedtls"
+
+# make hnetd depends on odhcpd-ipv6only instead of odhcpd
+sed -i "s/+odhcpd/+odhcpd-ipv6only/g" feeds/routing/hnetd/Makefile
+echo "Set hnetd depends on odhcpd-ipv6only instead of odhcpd"
 
 echo -e "FIX Completed!!!\n"
 
