@@ -2,8 +2,10 @@
 Build LEDE OpenWrt with GitHub actions  
 [官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
 
-## DNSMASQ V2.87
-Lede的dnsmasq 再次 bump 到v2.87  
+## DNSMASQ V2.87+
+Lede的dnsmasq 再次 bump 到v2.88  
+嗯~ o(*￣▽￣*)o  
+当时还疑惑为什么不直接2.88  
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
