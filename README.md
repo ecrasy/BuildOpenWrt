@@ -6,8 +6,6 @@ Build LEDE OpenWrt with GitHub actions
 Lede的dnsmasq 再次 bump 到v2.88  
 嗯~ o(*￣▽￣*)o  
 当时还疑惑为什么不直接2.88  
-哎，无事刷了新固件测试  
-DHCP无法工作，也没错误日志  
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
