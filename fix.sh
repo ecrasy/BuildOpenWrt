@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-01-04 04:08:03 UTC
+# Modified Time: 2023-01-05 03:41:34 UTC
 #########################################################################
 
 
@@ -38,7 +38,8 @@ else
     nftables_path="package/network/utils/nftables"
     nftables_ver=$(grep 'PKG_VERSION:=0.9.6' ${nftables_path}/Makefile)
     if [ ! -z "${nftables_ver}" ]; then
-        cp -rf $GITHUB_WORKSPACE/data/app/nftables/* ${nftables_path}/
+        rm -rf package/network/utils/nftables
+        cp -r $GITHUB_WORKSPACE/data/app/nftables  package/network/utils/
         echo "try nftables version 1.0.5 for dnsmasq v2.87"
     fi
 fi
@@ -60,5 +61,13 @@ echo "Set ipv6-helper depends on odhcpd instead of odhcpd-ipv6only "
 # make shairplay depends on mdnsd instead of libavahi-compat-libdnssd
 sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Makefile
 echo "Set shairplay depends on mdnsd instead of libavahi-compat-libdnssd"
+
+# replace miniupnpd from official openwrt feeds
+upnp_ver=$(grep 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
+if [ ! -z "${upnp_ver}" ]; then
+    rm -rf feeds/packages/net/miniupnpd
+    cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
+    echo "Replace miniupnpd from official openwrt feeds"
+fi
 
 echo -e "Fixing Jobs Completed!!!\n"
