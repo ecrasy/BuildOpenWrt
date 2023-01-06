@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-01-05 03:41:34 UTC
+# Modified Time: 2023-01-06 00:12:47 UTC
 #########################################################################
 
 
@@ -54,9 +54,13 @@ echo "Set minidlna depends on libffmpeg-full instead of libffmpeg"
 sed -i "s/libustream-mbedtls/libustream-openssl/g" feeds/packages/net/cshark/Makefile
 echo "Set cshark depends on libustream-openssl instead of libustream-mbedtls"
 
-# make ipv6-helper depends on odhcpd instead of odhcpd-ipv6only
-sed -i "s/+odhcpd-ipv6only /+odhcpd /g" package/lean/ipv6-helper/Makefile
-echo "Set ipv6-helper depends on odhcpd instead of odhcpd-ipv6only "
+# remove ipv6-helper depends on odhcpd*
+sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
+echo "Remove ipv6-helper depends on odhcpd*"
+
+# remove hnetd depends on odhcpd*
+sed -i "s/+odhcpd//g" package/feeds/routing/hnetd/Makefile
+echo "Remove hnetd depends on odhcpd*"
 
 # make shairplay depends on mdnsd instead of libavahi-compat-libdnssd
 sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Makefile
