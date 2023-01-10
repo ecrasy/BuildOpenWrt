@@ -2,7 +2,7 @@
  # File Name: x86_64_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:35:06 UTC
- # Modified Time: 2023-01-10 08:16:29 UTC
+ # Modified Time: 2023-01-10 12:40:54 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -503,6 +503,17 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Free Up Disk Space
+        if: env.FREE_UP_DISK == 'true'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* azure-cli firefox powershell
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
+          docker image prune -a -f
 
       - name: Initialize Environment
         env:
