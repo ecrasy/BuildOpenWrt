@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2022-12-18 14:28:34 UTC
+# Modified Time: 2023-01-10 09:53:15 UTC
 #########################################################################
 
 
@@ -37,12 +37,12 @@ cp $GITHUB_WORKSPACE/data/etc/model.sh package/base-files/files/etc/
 chmod 0755 package/base-files/files/etc/model.sh
 echo "Add model.sh"
 
-# Add 054-ula-prefix, try to set up IPv6 ula prefix after wlan up
+# Add 095-ula-prefix, try to set up IPv6 ula prefix after wlan up
 # and call model.sh
 mkdir -p package/base-files/files/etc/hotplug.d/iface
-cp $GITHUB_WORKSPACE/data/etc/054-ula-prefix package/base-files/files/etc/hotplug.d/iface/
-chmod 0755 package/base-files/files/etc/hotplug.d/iface/054-ula-prefix
-echo "Add 054-ula-prefix"
+cp $GITHUB_WORKSPACE/data/etc/095-ula-prefix package/base-files/files/etc/hotplug.d/iface/
+chmod 0755 package/base-files/files/etc/hotplug.d/iface/095-ula-prefix
+echo "Add 095-ula-prefix"
 
 # Add base config files
 # mkdir -p package/base-files/files/etc/config
