@@ -1,19 +1,21 @@
 #########################################################################
-# File Name: 054-ula-prefix
+# File Name: 095-ula-prefix
 # Author: Carbon (ecrasy@gmail.com)
 # Description: only work in pppoe protocol
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2023-01-06 09:43:08 UTC
+# Modified Time: 2023-01-10 07:23:43 UTC
 #########################################################################
 
 #!/bin/sh
 
 [ "${ACTION}" = ifup ] || exit 0
-[ "${INTERFACE}" = wan ] || exit 0
+[ "${INTERFACE}" = wan6 ] || exit 0
+
+ula_log="/tmp/_ula_prefix"
 
 proto=$(uci get network.wan.proto)
 if [ "${proto}" != "pppoe" ]; then
-    echo "proto is not pppoe: ${proto}" > /tmp/_ula_prefix
+    echo "proto is not pppoe: ${proto}" > $ula_log
     exit 0
 fi
 
@@ -21,39 +23,46 @@ sleep 2s
 
 for try_times in `seq 1 8`
 do
+    ifpw=$(ifconfig pppoe-wan)
     prefix_len=60
+    echo -e "trying to figure out ula prefix in ${try_times} ... ... ...\n" > $ula_log
+    echo -e "ifconfig pppoe-wan:\n${ifpw}\n" >> $ula_log
+
     ip6_addr=$(ifconfig pppoe-wan | grep -m1 'inet6 addr:.*Scope:Global$' | sed -e 's/^.*inet6 addr://' -e 's/Scope:Global.*$//')
     if [ ! -z "${ip6_addr}" ]; then
-        prefix_len_=$(echo $ip6_addr | cut -d'/' -f 2)
+        prefix_len_=$(echo ${ip6_addr} | cut -d'/' -f 2)
         if [ ! -z "${prefix_len_}" ]; then
             prefix_len=$prefix_len_
+        else
+            echo "cant get prefix len from ${ip6_addr}" >> $ula_log
         fi
     fi
 
-    echo "try ${try_times} times ... ... ..." > /tmp/_ula_prefix
-    echo "prefix length:${prefix_len}" >> /tmp/_ula_prefix
+    echo -e "prefix length:${prefix_len}\n" >> $ula_log
 
+    iprs=$(ip -6 route show)
     prefixs=$(ip -6 route show | grep 'default' | sed -e 's/^.*from //g' -e 's/ via.*$//g')
 
-    echo -e "ula prefixs found:\n${prefixs}" >> /tmp/_ula_prefix
+    echo -e "ip route show:\n${iprs}\n" >> $ula_log
+    echo -e "ula prefixs found:\n${prefixs}\n" >> $ula_log
 
     ula_prefix=""
 
     for prefix in $prefixs
     do
-        echo "try prefix:${prefix}" >> /tmp/_ula_prefix
+        echo "try prefix:${prefix}" >> $ula_log
         fr=$(echo $prefix | grep "/${prefix_len}")
         if [ ! -z "${fr}" ]; then
             ula_prefix=$prefix
-            echo "ula prefix match: ${prefix}" >> /tmp/_ula_prefix
+            echo "ula prefix match: ${prefix}" >> $ula_log
             break
         else
-            echo "prefix:${prefix} not match" >> /tmp/_ula_prefix
+            echo "prefix:${prefix} not match" >> $ula_log
         fi
     done
 
     if [ ! -z "${ula_prefix}" ]; then
-        echo "tried ${try_times} times looking for ula prefix" >> /tmp/_ula_prefix
+        echo -e "\nula prefix found with ${try_times} tries" >> $ula_log
         #uci set network.globals.ula_prefix="${ula_prefix}"
         #uci set network.lan.ip6assign="${prefix_len}"
         #uci commit network
@@ -61,7 +70,7 @@ do
         #/sbin/ifup lan
         break
     else
-        echo -e "found no match in prefixs:\n${prefixs}" >> /tmp/_ula_prefix
+        echo -e "found no match in prefixs:\n${prefixs}" >> $ula_log
         sleep 1s
     fi
 done
