@@ -1,9 +1,9 @@
 #########################################################################
 # File Name: 095-ula-prefix
 # Author: Carbon (ecrasy@gmail.com)
-# Description: only work in pppoe protocol
+# Description: try to figure out ula prefix and set model name
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2023-01-11 00:15:28 UTC
+# Modified Time: 2023-01-11 01:48:39 UTC
 #########################################################################
 
 #!/bin/sh
@@ -32,7 +32,7 @@ do
 
     if [ -z "${prefix_len}" ]; then
         echo "set ula prefix to default 60" >> $ula_log
-        prefix_len=60
+        prefix_len="60"
     fi
     echo -e "prefix length:${prefix_len}\n" >> $ula_log
 
@@ -49,12 +49,16 @@ do
             echo "ula prefix match: ${prefix}" >> $ula_log
             break
         else
-            echo "prefix:${prefix} not match" >> $ula_log
+            echo "ula prefix not match: ${prefix}" >> $ula_log
         fi
     done
 
     if [ ! -z "${ula_prefix}" ]; then
         echo -e "\nula prefix found with ${try_times} tries" >> $ula_log
+
+        # since dnsmasq set ula prefix by itself
+        # we wont bother to do so
+        # just clear the global ula prefix for dnsmasq
         uci set network.globals.ula_prefix=""
         uci commit network
         #/etc/init.d/dnsmasq restart
