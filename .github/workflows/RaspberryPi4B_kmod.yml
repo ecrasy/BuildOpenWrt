@@ -2,7 +2,7 @@
  # File Name: RaspberryPi4B_kmod.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:20:22 UTC
- # Modified Time: 2023-01-10 12:40:38 UTC
+ # Modified Time: 2023-01-14 02:13:22 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -84,19 +84,18 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf /usr/share/dotnet
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq -y upgrade
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           docker image prune -a -f
 
       - name: Initialize Environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get update -qq
-          sudo -E apt-get upgrade -qq -y
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
@@ -320,23 +319,23 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf /usr/share/dotnet
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq -y upgrade
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           docker image prune -a -f
 
       - name: Initialize Environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          sudo -E apt-get update -qq
-          sudo -E apt-get upgrade -qq -y
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          mkdir workspace
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
@@ -363,7 +362,6 @@ jobs:
       - name: Prepare Toolchain Image From Releases
         if: env.TOOLCHAIN_RELEASE_UPLOAD == 'true'
         run: |
-          mkdir workspace
           cd workspace
           for i in {0..9}
           do
@@ -510,20 +508,23 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf /usr/share/dotnet
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq -y upgrade
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get -y clean
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           docker image prune -a -f
 
       - name: Initialize Environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo -E apt-get update -qq
-          sudo -E apt-get upgrade -qq -y
-          sudo -E apt-get -y install zip unzip rsync
+          sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get -y clean
           sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          mkdir workspace
 
       - name: Download Bin Archive
         uses: actions/download-artifact@v3.0.1

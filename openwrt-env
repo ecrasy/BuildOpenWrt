@@ -1,1 +1,1 @@
-build-essential gawk gcc-multilib flex git gettext libncurses5-dev libssl-dev python3-distutils rsync unzip zlib1g-dev clang
+build-essential gawk gcc-multilib flex git gettext libncurses5-dev libssl-dev python3-distutils rsync zip unzip zlib1g-dev clang
