@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-01-06 00:12:47 UTC
+# Modified Time: 2023-02-10 14:10:30 UTC
 #########################################################################
 
 
@@ -73,5 +73,13 @@ if [ ! -z "${upnp_ver}" ]; then
     cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
     echo "Replace miniupnpd from official openwrt feeds"
 fi
+
+# make luci-app-firewall depends on uci-firewall instead of firewall
+sed -i 's/+firewall/+uci-firewall/g' feeds/luci/applications/luci-app-firewall/Makefile
+echo "Set luci-app-firewall depends on uci-firewall instead of firewall"
+
+# remove 98-passwall
+rm -rf feeds/PWluci/luci-app-passwall/root/etc/hotplug.d/iface/98-passwall
+echo "Remove passwall stupid restart script"
 
 echo -e "Fixing Jobs Completed!!!\n"
