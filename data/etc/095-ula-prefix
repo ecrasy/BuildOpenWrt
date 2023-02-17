@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: try to figure out ula prefix and set model name
 # Created Time: 2022-09-26 01:39:07 UTC
-# Modified Time: 2023-01-11 01:48:39 UTC
+# Modified Time: 2023-02-17 10:34:36 UTC
 #########################################################################
 
 #!/bin/sh
@@ -73,3 +73,4 @@ do
 done
 
 . /etc/model.sh
+

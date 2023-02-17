@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2023-01-10 09:53:15 UTC
+# Modified Time: 2023-02-17 10:33:44 UTC
 #########################################################################
 
 
@@ -54,3 +54,4 @@ sed -i '/distfeeds/d' package/lean/default-settings/files/zzz-default-settings
 echo "Remove customization of distfeeds.conf, cant trust them btw"
 
 echo -e "DIY Jobs Completed!!!\n"
+
