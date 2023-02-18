@@ -2,11 +2,6 @@
 Build LEDE OpenWrt with GitHub actions  
 [官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
 
-## DNSMASQ V2.87+
-Lede的dnsmasq 再次 bump 到v2.88  
-嗯~ o(*￣▽￣*)o  
-当时还疑惑为什么不直接2.88  
-
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
 默认开启支持IPv6路由功能。  
@@ -50,24 +45,14 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
 4. Firmware-bcm2711：不使用本地kmod软件源的树莓派4B固件。  
 5. Toolchain-image：编译工具链，方便workflow一次编译多次使用。  
 
-## 文件系统固件说明
-1. squash文件系统固件支持系统重置，  
-   机器重置至初始状态，  
-   所有已保存状态会被清除。
-2. ext4文件系统不支持系统重置功能，  
-   支持使用工具GParted，  
-   对已经烧写了固件的磁盘设备进行分区大小调整。
-
 ## 网络和代理 设置说明
-1. 目前这几个版本的Passwall还是比Passwall2好用。    
+1. 个人感觉Passwall比Passwall2和SSR+都好用。    
 2. 网络->Lan->基本设置->静态地址->使用自定义的 DNS 服务器：  
-   可以留空，也可以填写路由器的IP地址，  
-   或者是当地ISP服务商提供的IPv4 DNS地址。  
+   PPPOE拨号的可以留空，系统会自动处理。  
    网关地址请留空，系统会设置默认网关地址，  
    否则**状态->概览**会将Lan口信息显示为Wan口信息。  
 3. IPv6设置->通告的 DNS 服务器:  
-   PPPOE拨号的请留空，  
-   最新版本的LEDE代码会自动处理。  
+   PPPOE拨号的可以留空，系统会自动处理。  
 4. 当地ISP服务商提供的DNS地址查看方法：  
    PPPoE拨号方式：主菜单进入“状态->概览”，可以查看。  
    DHCP和静态IP方式：请查看上级路由提供的信息。  
@@ -78,9 +63,9 @@ Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，
    即可开启广告拦截功能，而且不影响Passwall的代理。      
 6. diy.sh将默认shell更改为bash了，  
    所以在make menuconfig里面需要激活选择bash。  
-7. 剔除turbo acc和chinadns-ng：  
-   测试中发现，1000M网络，这两个软件反而起负作用。  
-   需要这两个软件的，可以使用命令make menuconfig勾选编译。
+7. 剔除turbo acc：  
+   测试中发现，这软件负作用。  
+   需要这软件的，可以使用命令make menuconfig勾选编译。
 8. 通过VPS搭建代理请查看wiki  
    [Wiki教程](https://github.com/ecrasy/BuildOpenwrt/wiki)  
    
