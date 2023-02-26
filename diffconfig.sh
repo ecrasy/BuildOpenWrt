@@ -3,23 +3,17 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-26 10:58:29 UTC
-# Modified Time: 2022-10-01 12:57:11 UTC
+# Modified Time: 2023-02-26 03:18:10 UTC
 #########################################################################
-
 
 #!/bin/bash
 
-
-[ "$#" != "2" ] && {
-    echo "input error"
-    exit 0
-}
-
-if [ ! -e $1 ] || [ ! -e $2 ] 
-then
-    echo "file not exist!!!"
-    exit 0
+usage() { echo "Usage: $0 <config file1> <config file2>" 1>&2; exit 1; }
+if [ $# -ne 2 ]; then
+    usage
 fi
+
+([ -e $1 ] && [ -e $2]) || exit 0
 
 IFS_old=$IFS
 IFS=$'\n'

@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-10-07 10:59:04 UTC
-# Modified Time: 2022-11-04 12:37:40 UTC
+# Modified Time: 2023-02-26 03:10:45 UTC
 #########################################################################
 
 
@@ -11,7 +11,9 @@
 
 set -e
 
-function prompter() {
+usage() { echo "Usage: $0 -c <configs dir> -o <openwrt source dir>" 1>&2; exit 1; }
+
+prompter() {
     echo -e "\n********************************************\n$1"
     command $2
     echo -e "********************************************\n"
@@ -19,22 +21,30 @@ function prompter() {
 
 configs_dir=""
 openwrt_dir=""
-if [ "$1" != "" ] 
-then
-    configs_dir=$1
-fi
-if [ "$2" != "" ]
-then
-    openwrt_dir=$2
-fi
+
+while getopts ":c:o:" o; do
+    case "${o}" in
+        c)
+            configs_dir=${OPTARG}
+            ;;
+        o)
+            openwrt_dir=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+[ -n "$configs_dir" ] || usage
+[ -n "$openwrt_dir" ] || usage
 
 configs_dir=$(echo $configs_dir | xargs realpath -s | sed 's:/*$::')
 openwrt_dir=$(echo $openwrt_dir | xargs realpath -s | sed 's:/*$::')
-[ -z "$configs_dir" ] && exit 0
-[ -z "$openwrt_dir" ] && exit 0
+[ -n "$configs_dir" ] || exit 0
+[ -n "$openwrt_dir" ] || exit 0
 
 configs=$(find $configs_dir -maxdepth 1 -type f -name '*.config' -printf "%f\n" | sort -f)
-
 [ -z "$configs" ] && exit 0
 
 prompt="Configs dir: $configs_dir\nConfigs found:"

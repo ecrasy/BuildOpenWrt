@@ -4,14 +4,16 @@
 # Description: feel free to use
 # Description: run this script once before make menuconfig
 # Created Time: 2022-12-18 14:15:22 UTC
-# Modified Time: 2023-02-10 22:33:50 UTC
+# Modified Time: 2023-02-26 03:23:26 UTC
 #########################################################################
 
 #!/bin/bash
 
+set -e
+
+usage() { echo "Usage: $0 <openwrt source dir1> <openwrt source dir2> ..." 1>&2; exit 1; }
 if [ $# -lt 1 ]; then
-    echo "Need openwrt source path as input"
-    exit 0
+    usage
 fi
 
 for op_dir in $@
