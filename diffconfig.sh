@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-26 10:58:29 UTC
-# Modified Time: 2023-02-26 03:18:10 UTC
+# Modified Time: 2023-02-27 08:21:06 UTC
 #########################################################################
 
 #!/bin/bash
@@ -13,7 +13,7 @@ if [ $# -ne 2 ]; then
     usage
 fi
 
-([ -e $1 ] && [ -e $2]) || exit 0
+[[ -e $1 && -e $2 ]] || exit 0
 
 IFS_old=$IFS
 IFS=$'\n'
@@ -29,9 +29,7 @@ file1="$src1.tmp.$ext1"
 file2="$src2.tmp.$ext2"
 common="$(dirname $var1)/common.$ext1"
 
-[  -e "$common" ] && {
-    rm -f $common
-}
+[  -e "$common" ] && { rm -f $common; }
 
 # remove empty lines
 sed '/^$/d' $var1 > $file1
@@ -58,12 +56,8 @@ grep -vE "$filter" $file1 > $result1
 grep -vE "$filter" $file2 > $result2
 
 # clean up
-[  -e "$file1" ] && {
-    rm -f $file1
-}
-[  -e "$file2" ] && {
-    rm -f $file2
-}
+[  -e "$file1" ] && { rm -f $file1; }
+[  -e "$file2" ] && { rm -f $file2; }
 
 IFS=$IFS_old
 
