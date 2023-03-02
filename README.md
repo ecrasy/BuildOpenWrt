@@ -4,19 +4,25 @@ Build LEDE OpenWrt with GitHub actions
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
-默认开启支持IPv6路由功能。  
-**有时候梯子或者VPS不支持IPv6**  
-Passwall，Passwall2和shadowsocksR plus在开启IPv6之后，  
+默认支持IPv6路由功能。  
+**开启DHCPv6：**  
+![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/DHCPv6.jpg)  
+
+**近来很多443非https端口被封，**  
+建议将vps转变为web服务器，  
+由nginx等服务端将代理转交给后台的v2ray，  
+具体参看[Wiki教程](https://github.com/ecrasy/BuildOpenwrt/wiki)  
+
+**有的梯子或者VPS不支持IPv6**  
+路由在开启IPv6功能之后，  
 都会有概率无法访问某些网站，  
 有些是同一个网站只有某些子路径会有访问问题，  
 此时可以尝试:  
-1. 在**网络->接口->LAN->IPv6设置**中，  
+在**网络->接口->LAN->IPv6设置**中，  
 关闭**路由通告服务**和**DHCPv6 服务**，  
 暂时恢复梯子功能。  
-逆操作可以重新开启IPv6。  
-**开启DHCPv6：**  
-![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/DHCPv6.jpg)  
-2. 或者打开Passwall的过滤IPv6的功能  
+
+或者打开Passwall的过滤IPv6的功能  
 这样既可以保持IPv6功能，同时还能继续无忧代理  
 因为这个功能是实验性功能，不能保证100%成功  
 ![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/dns.jpg)  
