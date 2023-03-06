@@ -93,6 +93,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          sudo -E apt --only-upgrade install grub-efi-amd64-signed
           sudo -E apt-get -qq -y upgrade
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
