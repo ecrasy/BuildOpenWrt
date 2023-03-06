@@ -82,6 +82,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          echo 'APT::Get::Always-Include-Phased-Updates "false";' | sudo tee /etc/apt/apt.conf.d/99-phased-updates
           sudo -E apt-get -qq update
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* php apache2 azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
@@ -93,7 +94,6 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo -E apt --only-upgrade install grub-efi-amd64-signed
           sudo -E apt-get -qq -y upgrade
           sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/openwrt-env)
           sudo -E apt-get -y autoremove --purge
@@ -317,6 +317,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          echo 'APT::Get::Always-Include-Phased-Updates "false";' | sudo tee /etc/apt/apt.conf.d/99-phased-updates
           sudo -E apt-get -qq update
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* php apache2 azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
@@ -485,6 +486,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          echo 'APT::Get::Always-Include-Phased-Updates "false";' | sudo tee /etc/apt/apt.conf.d/99-phased-updates
           sudo -E apt-get -qq update
           sudo -E apt-get -qq -y purge ghc* zulu* google* dotnet* mysql* php apache2 azure-cli firefox powershell
           sudo -E apt-get -y autoremove --purge
