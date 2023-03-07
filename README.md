@@ -1,6 +1,24 @@
 # BuildOpenWrt
 Build LEDE OpenWrt with GitHub actions  
-[官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)
+[官方源码编译版本](https://github.com/ecrasy/BuildOfficialOpenWrt)  
+
+用了一段时间Smartdns和Chinadns-NG  
+感觉这两个模块有点脱裤子放屁  
+根本就是无用功，多余不说还可能带来安全隐患  
+
+Dnsmasq作为OpenWrt的基础组件  
+完全遵照RFC标准开发  
+为很多路由系统所用（商用的和开源的）  
+Smartdns更像是一个满足个人特殊需求的小作品  
+完全无法代替Dnsmasq  
+甚至在获取DNS的速度上也很难保证达到其声称的目标  
+
+Chinadns-NG的设计初衷是可信DNS  
+对于使用Passwall的用户来说是没必要的多此一举  
+国内的DNS查询是无所谓可信不可信的  
+因为无论如何你能拿到的结果都是完全掌握在政府手里的  
+国外的DNS查询结果来自于自建VPS  
+这个不需要Chinadns-NG来告诉你是否可信  
 
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
