@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-02-17 10:33:53 UTC
+# Modified Time: 2023-03-22 11:02:34 UTC
 #########################################################################
 
 
@@ -29,14 +29,14 @@ echo "Fix python host compile install error!!!"
 # fixing dnsmasq v2.86 compile error
 # from: https://github.com/openwrt/openwrt/issues/9043
 dnsmasq_path="package/network/services/dnsmasq"
-dnsmasq_ver=$(grep 'PKG_UPSTREAM_VERSION:=2.86' ${dnsmasq_path}/Makefile)
+dnsmasq_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=2.86' ${dnsmasq_path}/Makefile)
 if [ ! -z "${dnsmasq_ver}" ]; then
     cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch ${dnsmasq_path}/patches/
     echo "Fix dnsmasq v2.86 issue 9043"
 else
 # try nftables version 1.0.5 for dnsmasq v2.87
     nftables_path="package/network/utils/nftables"
-    nftables_ver=$(grep 'PKG_VERSION:=0.9.6' ${nftables_path}/Makefile)
+    nftables_ver=$(grep -m1 'PKG_VERSION:=0.9.6' ${nftables_path}/Makefile)
     if [ ! -z "${nftables_ver}" ]; then
         rm -rf package/network/utils/nftables
         cp -r $GITHUB_WORKSPACE/data/app/nftables  package/network/utils/
@@ -67,7 +67,7 @@ sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Mak
 echo "Set shairplay depends on mdnsd instead of libavahi-compat-libdnssd"
 
 # replace miniupnpd from official openwrt feeds
-upnp_ver=$(grep 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
+upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
 if [ ! -z "${upnp_ver}" ]; then
     rm -rf feeds/packages/net/miniupnpd
     cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
