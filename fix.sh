@@ -78,9 +78,5 @@ fi
 sed -i 's/+firewall/+uci-firewall/g' feeds/luci/applications/luci-app-firewall/Makefile
 echo "Set luci-app-firewall depends on uci-firewall instead of firewall"
 
-# remove 98-passwall
-rm -rf feeds/PWluci/luci-app-passwall/root/etc/hotplug.d/iface/98-passwall
-echo "Remove passwall stupid restart script"
-
 echo -e "Fixing Jobs Completed!!!\n"
 
