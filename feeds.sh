@@ -15,8 +15,8 @@ echo "# Custom feeds for OpenWrt" > feeds.conf.default
 
 # passwall
 echo "Adding xiaorouji passwall"
-echo "src-git PWpackages https://github.com/xiaorouji/openwrt-passwall.git;packages" >> feeds.conf.default
-echo "src-git PWluci https://github.com/xiaorouji/openwrt-passwall.git;luci" >> feeds.conf.default
+echo "src-git PWpackages https://github.com/ecrasy/openwrt-passwall.git;packages" >> feeds.conf.default
+echo "src-git PWluci https://github.com/ecrasy/openwrt-passwall.git;luci" >> feeds.conf.default
 
 # passwall2
 echo "Adding xiaorouji Passwall2"
