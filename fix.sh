@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-03-22 11:02:34 UTC
+# Modified Time: 2023-07-16 23:45:15 UTC
 #########################################################################
 
 
@@ -34,13 +34,14 @@ if [ ! -z "${dnsmasq_ver}" ]; then
     cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch ${dnsmasq_path}/patches/
     echo "Fix dnsmasq v2.86 issue 9043"
 else
-# try nftables version 1.0.5 for dnsmasq v2.87
     nftables_path="package/network/utils/nftables"
     nftables_ver=$(grep -m1 'PKG_VERSION:=0.9.6' ${nftables_path}/Makefile)
     if [ ! -z "${nftables_ver}" ]; then
         rm -rf package/network/utils/nftables
-        cp -r $GITHUB_WORKSPACE/data/app/nftables  package/network/utils/
-        echo "try nftables version 1.0.5 for dnsmasq v2.87"
+        rm -rf package/libs/libnftnl
+        cp -r $GITHUB_WORKSPACE/data/app/nftables package/network/utils/
+        cp -r $GITHUB_WORKSPACE/data/app/libnftnl package/libs/
+        echo "try nftables version 1.0.6 for dnsmasq v2.87+"
     fi
 fi
 
