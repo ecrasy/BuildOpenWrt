@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-07-16 23:45:15 UTC
+# Modified Time: 2023-07-17 08:02:35 UTC
 #########################################################################
 
 
@@ -41,7 +41,7 @@ else
         rm -rf package/libs/libnftnl
         cp -r $GITHUB_WORKSPACE/data/app/nftables package/network/utils/
         cp -r $GITHUB_WORKSPACE/data/app/libnftnl package/libs/
-        echo "try nftables version 1.0.6 for dnsmasq v2.87+"
+        echo "try nftables version 1.0.8 for dnsmasq v2.87+"
     fi
 fi
 
