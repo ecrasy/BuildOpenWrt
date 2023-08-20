@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-07-17 08:02:35 UTC
+# Modified Time: 2023-08-20 09:55:59 UTC
 #########################################################################
 
 
@@ -78,6 +78,14 @@ fi
 # make luci-app-firewall depends on uci-firewall instead of firewall
 sed -i 's/+firewall/+uci-firewall/g' feeds/luci/applications/luci-app-firewall/Makefile
 echo "Set luci-app-firewall depends on uci-firewall instead of firewall"
+
+# fix patch error
+PATCH_PATH="target/linux/bcm27xx/patches-5.15"
+rm -rf ${PATCH_PATH}/950-0600-xhci-quirks-add-link-TRB-quirk-for-VL805.patch
+rm -rf ${PATCH_PATH}/950-0606-usb-xhci-add-VLI_TRB_CACHE_BUG-quirk.patch
+rm -rf ${PATCH_PATH}/950-0717-usb-xhci-add-a-quirk-for-Superspeed-bulk-OUT-transfe.patch
+rm -rf ${PATCH_PATH}/950-0747-usb-xhci-rework-XHCI_VLI_SS_BULK_OUT_BUG-quirk.patch
+echo "Remove bcm27xx error patch files"
 
 echo -e "Fixing Jobs Completed!!!\n"
 
