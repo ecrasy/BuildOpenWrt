@@ -1,0 +1,16 @@
+--- a/99-default_network	2023-05-20 05:55:43.305521496 +0800
++++ b/99-default_network	2023-08-21 18:12:15.575985549 +0800
+@@ -8,8 +8,11 @@
+ 
+ json_is_a network object && exit 0
+ 
+-ucidef_set_interface_lan 'eth0'
+-[ -d /sys/class/net/eth1 ] && ucidef_set_interface_wan 'eth1'
++if [ -d /sys/class/net/eth1 ]; then
++    ucidef_set_interfaces_lan_wan 'eth1' 'eth0'
++else
++    ucidef_set_interface_lan 'eth0'
++fi
+ 
+ board_config_flush
+ 

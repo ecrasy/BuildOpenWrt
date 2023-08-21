@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2023-02-17 10:33:44 UTC
+# Modified Time: 2023-08-21 11:18:11 UTC
 #########################################################################
 
 
@@ -13,10 +13,23 @@
 sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate 
 echo "Change default LAN IP to 192.168.2.1"
 
-# Set eth0 to wan and eth1 to lan as default
-rm -rf package/base-files/files/etc/board.d/99-default_network
-cp $GITHUB_WORKSPACE/data/etc/99-default_network package/base-files/files/etc/board.d/
-echo "Set eth0 to wan and eth1 to lan as default while eth1 exists"
+# Patch 02_network config file
+BOARD_PATH="target/linux/x86/base-files/etc/board.d"
+PATCH_FILE="${GITHUB_WORKSPACE}/data/patches/02_network.patch"
+RLINE=$(grep -m1 -n 'esac' ${BOARD_PATH}/02_network |awk '{ print $1 }' |cut -d':' -f1)
+if [ -n "$RLINE" ]; then
+    RLINE=$((RLINE-1))
+    OP_RESULT=$(sed -i -e "${RLINE}r ${PATCH_FILE}" ${BOARD_PATH}/02_network)
+    echo "Patch 02_network config file $OP_RESULT"
+fi
+
+# Patch 99-default_network config file
+BOARD_PATH="package/base-files/files/etc/board.d"
+cp $GITHUB_WORKSPACE/data/patches/99-default_network.patch $BOARD_PATH/
+cd $BOARD_PATH/
+OP_RESULT=$(patch < 99-default_network.patch)
+cd -
+echo "Patch 99-default_network config file $OP_RESULT"
 
 # Change default shell from ash to bash 
 # Note: bash need to be selected from make menuconfig first
