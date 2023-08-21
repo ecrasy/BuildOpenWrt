@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:01:29 UTC
-# Modified Time: 2023-08-21 12:26:02 UTC
+# Modified Time: 2023-08-21 14:08:58 UTC
 #########################################################################
 
 
@@ -28,6 +28,7 @@ BOARD_PATH="package/base-files/files/etc/board.d"
 cp $GITHUB_WORKSPACE/data/patches/99-default_network.patch $BOARD_PATH/
 cd $BOARD_PATH/
 OP_RESULT=$(patch < 99-default_network.patch)
+rm -rf 99-default_network.patch
 echo "Patch 99-default_network config file: $OP_RESULT"
 cd ~-
 
