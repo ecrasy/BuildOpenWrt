@@ -9,9 +9,9 @@ board_config_update
 json_is_a network object && exit 0
 
 if [ -d /sys/class/net/eth1 ]; then
-    ucidef_set_interfaces_lan_wan 'eth1' 'eth0'
+	ucidef_set_interfaces_lan_wan 'eth1' 'eth0'
 else
-    ucidef_set_interface_lan 'eth0'
+	ucidef_set_interface_lan 'eth0'
 fi
 
 board_config_flush
