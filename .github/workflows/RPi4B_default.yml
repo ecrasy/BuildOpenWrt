@@ -2,7 +2,7 @@
  # File Name: RPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2023-02-03 09:06:45 UTC
+ # Modified Time: 2023-08-25 15:31:04 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -35,7 +35,7 @@ on:
   # types: [started]
 
 env:
-  SOURCE_URL: https://github.com/coolsnowwolf/lede
+  SOURCE_URL: https://github.com/ecrasy/lede-openwrt
   SOURCE_BRANCH: master
   CLONE_DEPTH: 200
   CONFIG_FILE: configs/RPi4B.config
