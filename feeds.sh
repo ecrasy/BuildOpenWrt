@@ -3,15 +3,15 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2023-02-17 10:33:34 UTC
+# Modified Time: 2023-10-02 13:54:59 UTC
 #########################################################################
 
 #!/bin/bash
 
-echo "Backup old feeds.conf.default"
-mv feeds.conf.default feeds.conf.default.bak
+# echo "Backup old feeds.conf.default"
+# mv feeds.conf.default feeds.conf.default.bak
 
-echo "# Custom feeds for OpenWrt" > feeds.conf.default
+echo -e "\n# Custom feeds for OpenWrt" > feeds.conf.default
 
 # passwall
 echo "Adding xiaorouji passwall"
@@ -30,10 +30,10 @@ echo "src-git ssrp https://github.com/ecrasy/ssrp.git;main" >> feeds.conf.defaul
 echo "Adding custom packages"
 echo "src-git CustomPkgs https://github.com/ecrasy/custom-packages.git;for_lede" >> feeds.conf.default
 
-echo "Restore feeds.conf.default"
-echo -e "\n# Default feeds for OpenWrt" >> feeds.conf.default
-cat feeds.conf.default.bak >> feeds.conf.default
-rm -rf feeds.conf.default.bak
+# echo "Restore feeds.conf.default"
+# echo -e "\n# Default feeds for OpenWrt" >> feeds.conf.default
+# cat feeds.conf.default.bak >> feeds.conf.default
+# rm -rf feeds.conf.default.bak
 
 echo "Adding Feeds Completed!!!"
 
