@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2023-10-02 13:54:59 UTC
+# Modified Time: 2023-10-11 02:51:10 UTC
 #########################################################################
 
 #!/bin/bash
@@ -11,7 +11,7 @@
 # echo "Backup old feeds.conf.default"
 # mv feeds.conf.default feeds.conf.default.bak
 
-echo -e "\n# Custom feeds for OpenWrt" > feeds.conf.default
+echo -e "\n# Custom feeds for OpenWrt" >> feeds.conf.default
 
 # passwall
 echo "Adding xiaorouji passwall"
