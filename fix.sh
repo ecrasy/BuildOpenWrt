@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-08-25 15:18:34 UTC
+# Modified Time: 2023-10-11 02:38:59 UTC
 #########################################################################
 
 
@@ -60,12 +60,16 @@ sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
 echo "Remove ipv6-helper depends on odhcpd*"
 
 # remove hnetd depends on odhcpd*
-sed -i "s/+odhcpd//g" package/feeds/routing/hnetd/Makefile
+sed -i "s/+odhcpd//g" feeds/routing/hnetd/Makefile
 echo "Remove hnetd depends on odhcpd*"
 
 # make shairplay depends on mdnsd instead of libavahi-compat-libdnssd
 sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Makefile
 echo "Set shairplay depends on mdnsd instead of libavahi-compat-libdnssd"
+
+# set v2raya depends on v2ray-core
+sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
+echo "set v2raya depends on v2ray-core"
 
 # replace miniupnpd from official openwrt feeds
 upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
