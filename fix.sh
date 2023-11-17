@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-10-11 02:38:59 UTC
+# Modified Time: 2023-11-17 23:22:12 UTC
 #########################################################################
 
 
@@ -26,22 +26,20 @@ python3_path="feeds/packages/lang/python/python3"
 cp $GITHUB_WORKSPACE/data/patches/lib-platform-sys-version.patch ${python3_path}/patches/
 echo "Fix python host compile install error!!!"
 
-# fixing dnsmasq v2.86 compile error
-# from: https://github.com/openwrt/openwrt/issues/9043
+# Try dnsmasq v2.89 with pkg version 7
 dnsmasq_path="package/network/services/dnsmasq"
-dnsmasq_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=2.86' ${dnsmasq_path}/Makefile)
-if [ ! -z "${dnsmasq_ver}" ]; then
-    cp $GITHUB_WORKSPACE/data/patches/dnsmasq-struct-daemon.patch ${dnsmasq_path}/patches/
-    echo "Fix dnsmasq v2.86 issue 9043"
+dnsmasq_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=2.89' ${dnsmasq_path}/Makefile)
+if [ -z "${dnsmasq_ver}" ]; then
+    rm -rf $dnsmasq_path
+    cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
+    echo "Try dnsmasq v2.89 with pkg version 7"
 else
-    nftables_path="package/network/utils/nftables"
-    nftables_ver=$(grep -m1 'PKG_VERSION:=0.9.6' ${nftables_path}/Makefile)
-    if [ ! -z "${nftables_ver}" ]; then
-        rm -rf package/network/utils/nftables
-        rm -rf package/libs/libnftnl
-        cp -r $GITHUB_WORKSPACE/data/app/nftables package/network/utils/
-        cp -r $GITHUB_WORKSPACE/data/app/libnftnl package/libs/
-        echo "try nftables version 1.0.8 for dnsmasq v2.87+"
+# upgrade dnsmasq pkg version to 7
+    pkg_ver=$(grep -m1 'PKG_RELEASE:=7' ${dnsmasq_path}/Makefile)
+    if [ -z "${pkg_ver}" ]; then
+        rm -rf $dnsmasq_path
+        cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
+        echo "Try upgrade dnsmasq v2.89 pkg version to 7"
     fi
 fi
 
