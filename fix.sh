@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-11-17 23:22:12 UTC
+# Modified Time: 2023-11-19 23:23:42 UTC
 #########################################################################
 
 
@@ -31,6 +31,7 @@ dnsmasq_path="package/network/services/dnsmasq"
 dnsmasq_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=2.89' ${dnsmasq_path}/Makefile)
 if [ -z "${dnsmasq_ver}" ]; then
     rm -rf $dnsmasq_path
+    cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
     cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
     echo "Try dnsmasq v2.89 with pkg version 7"
 else
@@ -38,6 +39,7 @@ else
     pkg_ver=$(grep -m1 'PKG_RELEASE:=7' ${dnsmasq_path}/Makefile)
     if [ -z "${pkg_ver}" ]; then
         rm -rf $dnsmasq_path
+        cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
         cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
         echo "Try upgrade dnsmasq v2.89 pkg version to 7"
     fi
