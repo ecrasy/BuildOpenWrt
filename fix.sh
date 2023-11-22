@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-11-21 14:20:15 UTC
+# Modified Time: 2023-11-22 01:13:50 UTC
 #########################################################################
 
 
@@ -31,7 +31,7 @@ dnsmasq_path="package/network/services/dnsmasq"
 dnsmasq_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=2.89' ${dnsmasq_path}/Makefile)
 if [ -z "${dnsmasq_ver}" ]; then
     rm -rf $dnsmasq_path
-    # cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
+    cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
     cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
     echo "Try dnsmasq v2.89"
 else
