@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-11-22 01:13:50 UTC
+# Modified Time: 2023-12-10 23:55:04 UTC
 #########################################################################
 
 
@@ -71,12 +71,14 @@ echo "Set shairplay depends on mdnsd instead of libavahi-compat-libdnssd"
 sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
 echo "set v2raya depends on v2ray-core"
 
-# replace miniupnpd from official openwrt feeds
+# replace miniupnp with official openwrt feeds packages
 upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
 if [ ! -z "${upnp_ver}" ]; then
     rm -rf feeds/packages/net/miniupnpd
+    rm -rf feeds/packages/net/miniupnpc
     cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
-    echo "Replace miniupnpd from official openwrt feeds"
+    cp -r $GITHUB_WORKSPACE/data/app/miniupnpc feeds/packages/net/
+    echo "Replace miniupnp with official openwrt feeds packages"
 fi
 
 # make luci-app-firewall depends on uci-firewall instead of firewall
