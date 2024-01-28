@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2023-12-10 23:55:04 UTC
+# Modified Time: 2024-01-28 01:21:05 UTC
 #########################################################################
 
 
@@ -73,7 +73,7 @@ echo "set v2raya depends on v2ray-core"
 
 # replace miniupnp with official openwrt feeds packages
 upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
-if [ ! -z "${upnp_ver}" ]; then
+if [ -n "${upnp_ver}" ]; then
     rm -rf feeds/packages/net/miniupnpd
     rm -rf feeds/packages/net/miniupnpc
     cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
