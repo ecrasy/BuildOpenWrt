@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2024-02-09 09:30:11 UTC
+ # Modified Time: 2024-02-09 09:45:11 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -339,7 +339,7 @@ jobs:
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: workspace
@@ -507,7 +507,7 @@ jobs:
           mkdir workspace
 
       - name: Download Bin Archive
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}
