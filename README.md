@@ -5,6 +5,15 @@ Build LEDE OpenWrt with GitHub actions
 SmartDNS,FakeDNS,ChinaDNS-NG,Turbo-ACC等组件建议勿选  
 经测试这些模块会拖累系统造成网络故障  
 
+## Caution
+最近来自中国大陆的Jia Cheong Tan  
+向测试验证过程做了手脚  
+一旦Linux发行版在编译过程后运行测试程序  
+就会触发“植入后门”  
+把后门植入xz 5.6.0 和 5.6.1，以及liblzma  
+需要谨慎对待来自中国大陆的代码  
+建议使用Lede版本的同学转向Official Openwrt  
+
 ## 项目介绍
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
 默认支持IPv6路由功能。  
