@@ -18,7 +18,7 @@ SmartDNS,FakeDNS,ChinaDNS-NG,Turbo-ACC等组件建议勿选
 使用GitHub Actions自动化编译L大的OpenWrt固件。  
 默认支持IPv6路由功能。  
 **开启DHCPv6：**  
-![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/DHCPv6.jpg)  
+![image](/pics/DHCPv6.jpg)  
 
 **近来很多443非https端口被封，**  
 建议将vps转变为web服务器，  
@@ -37,7 +37,7 @@ SmartDNS,FakeDNS,ChinaDNS-NG,Turbo-ACC等组件建议勿选
 或者打开Passwall的过滤IPv6的功能  
 这样既可以保持IPv6功能，同时还能继续无忧代理  
 因为这个功能是实验性功能，不能保证100%成功  
-![image](https://github.com/ecrasy/BuildOpenWrt/blob/main/pics/dns.jpg)  
+![image](/pics/dns.jpg)  
 
 ## 支持X86-64和树莓派4B
 1. configs文件夹中的config配置文件，  
@@ -89,19 +89,19 @@ SmartDNS,FakeDNS,ChinaDNS-NG,Turbo-ACC等组件建议勿选
    
 ## 光猫桥接网络设置
 Lan口设置：  
-![image](https://github.com/ecrasy/BuildOpenwrt/blob/main/pics/LAN.jpg)
+![image](/pics/LAN.jpg)
 Wan口设置：  
 PPPOE拨号设置略过不表，  
 高级设置获取拨号下发的IPv6地址如下：
-![image](https://github.com/ecrasy/BuildOpenwrt/blob/main/pics/WAN.jpg)
+![image](/pics/WAN.jpg)
 Wan6口设置：
-![image](https://github.com/ecrasy/BuildOpenwrt/blob/main/pics/WAN6-1.jpg)
+![image](/pics/WAN6-1.jpg)
 物理接口这里勾选**自定义接口**然后填\@**wan**  
-![image](https://github.com/ecrasy/BuildOpenwrt/blob/main/pics/WAN6-2.jpg)
+![image](/pics/WAN6-2.jpg)
   
 ### 网络概览图
 设置完成之后概览可以看到网络信息如下：
-![image](https://github.com/ecrasy/BuildOpenwrt/blob/main/pics/network_info.jpg)
+![image](/pics/network_info.jpg)
 
 
 ## 感谢以下项目 / 厂商:
