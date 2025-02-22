@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-02-22 03:32:41 UTC
+# Modified Time: 2025-02-22 03:37:43 UTC
 #########################################################################
 
 
@@ -62,13 +62,13 @@ else
     fi
 fi
 
-# Try v2ray-core v5.26.0 with golang v1.23.6
+# Try v2ray-core v5.29.1 with golang v1.23.6
 v2ray_path="feeds/packages/net/v2ray-core"
-v2ray_ver=$(grep -m1 'PKG_VERSION:=5.26.0' ${v2ray_path}/Makefile)
+v2ray_ver=$(grep -m1 'PKG_VERSION:=5.29.1' ${v2ray_path}/Makefile)
 if [ -f "${v2ray_path}/Makefile" ] && [ -z "${v2ray_ver}" ]; then
     rm -rf $v2ray_path
     cp -r $GITHUB_WORKSPACE/data/v2ray-core ${v2ray_path}
-    echo "Try v2ray-core v5.26.0"
+    echo "Try v2ray-core v5.29.1"
 fi
 
 # make minidlna depends on libffmpeg-full not libffmpeg
