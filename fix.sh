@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-01-27 02:32:32 UTC
+# Modified Time: 2025-02-22 03:32:41 UTC
 #########################################################################
 
 
@@ -45,24 +45,24 @@ else
     fi
 fi
 
-# Try golang v1.23.4
+# Try golang v1.23.6
 golang_path="feeds/packages/lang/golang"
 golang_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=1.23' ${golang_path}/golang/Makefile)
-golang_pkg=$(grep -m1 'GO_VERSION_PATCH:=4' ${golang_path}/golang/Makefile)
+golang_pkg=$(grep -m1 'GO_VERSION_PATCH:=6' ${golang_path}/golang/Makefile)
 if [ -z "${golang_ver}" ]; then
     rm -rf $golang_path
     cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
-    echo "Try golang v1.23.4"
+    echo "Try golang v1.23.6"
 else
-# upgrade golang to pkg version 4
+# upgrade golang to pkg version 6
     if [ -z "${golang_pkg}" ]; then
         rm -rf $golang_path
         cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
-        echo "upgrade golang to v1.23.4"
+        echo "upgrade golang to v1.23.6"
     fi
 fi
 
-# Try v2ray-core v5.26.0 with golang v1.23
+# Try v2ray-core v5.26.0 with golang v1.23.6
 v2ray_path="feeds/packages/net/v2ray-core"
 v2ray_ver=$(grep -m1 'PKG_VERSION:=5.26.0' ${v2ray_path}/Makefile)
 if [ -f "${v2ray_path}/Makefile" ] && [ -z "${v2ray_ver}" ]; then
