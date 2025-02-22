@@ -3,11 +3,42 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-02-22 05:08:36 UTC
+# Modified Time: 2025-02-22 05:51:09 UTC
 #########################################################################
 
 
 #!/bin/bash
+
+version_comp () {
+    if [[ $1 == $2 ]]
+    then
+        echo "="
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if ((10#${ver1[i]:=0} > 10#${ver2[i]:=0}))
+        then
+            echo ">"
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            echo "<"
+            return 2
+        fi
+    done
+
+    echo "="
+    return 0
+}
 
 # fix error from https://github.com/openwrt/luci/issues/5373
 # luci-app-statistics: misconfiguration shipped pointing to non-existent directory
@@ -28,40 +59,40 @@ echo "Fix python host compile install error!!!"
 
 # Try latest dnsmasq
 tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' $GITHUB_WORKSPACE/data/dnsmasq/Makefile)
-dnsmasq_data_ver="${tmp_ver##*=}"
+tmp_ver=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
+dnsmasq_data_ver="${tmp_ver##*=}.${tmp_ver##*=}"
 if [ -n "${dnsmasq_data_ver}" ]; then
     dnsmasq_path="package/network/services/dnsmasq"
     tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' ${dnsmasq_path}/Makefile)
-    dnsmasq_repo_ver="${tmp_ver##*=}"
-    if [ "${dnsmasq_repo_ver}" != "${dnsmasq_data_ver}" ]; then
+    tmp_ver=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
+    dnsmasq_repo_ver="${tmp_ver##*=}.${tmp_ver##*=}"
+    cr=$(version_comp "${dnsmasq_repo_ver}" "${dnsmasq_data_ver}")
+    if [ "$cr" == "<" ]; then
         rm -rf $dnsmasq_path
         cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
         cp -r $GITHUB_WORKSPACE/data/dnsmasq ${dnsmasq_path}
-        echo "Try dnsmasq ${dnsmasq_data_ver}"
+        echo "Upgrade dnsmasq from ${dnsmasq_repo_ver} to ${dnsmasq_data_ver}"
+    else
+        echo "Dnsmasq no change need to make: ${dnsmasq_repo_ver}"
     fi
 fi
 
 # Try latest golang
 tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
 data_pkg=$(grep -m1 'GO_VERSION_PATCH:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
-golang_data_ver="${tmp_ver##*=}"
+golang_data_ver="${tmp_ver##*=}.${data_pkg##*=}"
 if [ -n "${golang_data_ver}" ]; then
     golang_path="feeds/packages/lang/golang"
     tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' ${golang_path}/golang/Makefile)
     repo_pkg=$(grep -m1 'GO_VERSION_PATCH:=' ${golang_path}/golang/Makefile)
-    golang_repo_ver="${tmp_ver##*=}"
-    if [ "${golang_repo_ver}" != "${golang_data_ver}" ]; then
+    golang_repo_ver="${tmp_ver##*=}.${repo_pkg##*=}"
+    cr=$(version_comp "${golang_repo_ver}" "${golang_data_ver}")
+    if [ "$cr" == "<" ]; then
         rm -rf $golang_path
         cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
-        echo "Try golang ${golang_data_ver}"
+        echo "Upgrade golang from ${golang_repo_ver} to ${golang_data_ver}"
     else
-        data_pkg="${data_pkg##*=}"
-        repo_pkg="${repo_pkg##*=}"
-        if [ "$data_pkg" -gt "$repo_pkg" ]; then
-            rm -rf $golang_path
-            cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
-            echo "Upgrade golang to ${golang_data_ver}.${data_pkg}"
-        fi
+        echo "Golang no change need to make: ${golang_repo_ver}"
     fi
 fi
 
@@ -70,12 +101,17 @@ tmp_ver=$(grep -m1 'PKG_VERSION:=' ${GITHUB_WORKSPACE}/data/v2ray-core/Makefile)
 v2ray_data_ver="${tmp_ver##*=}"
 if [ -n "${v2ray_data_ver}" ]; then
     v2ray_path="feeds/packages/net/v2ray-core"
-    tmp_ver=$(grep -m1 'PKG_VERSION:=' ${v2ray_path}/Makefile)
-    v2ray_feeds_ver="${tmp_ver##*=}"
-    if  [ "${v2ray_feeds_ver}" != "${v2ray_data_ver}" ]; then
-        rm -rf $v2ray_path
-        cp -r $GITHUB_WORKSPACE/data/v2ray-core ${v2ray_path}
-        echo "Try v2ray-core ${v2ray_data_ver}"
+    if [ -d "${v2ray_path}" ]; then
+        tmp_ver=$(grep -m1 'PKG_VERSION:=' ${v2ray_path}/Makefile)
+        v2ray_repo_ver="${tmp_ver##*=}"
+        cr=$(version_comp "${v2ray_repo_ver}" "${v2ray_data_ver}")
+        if [ "$cr" == "<" ]; then
+            rm -rf $v2ray_path
+            cp -r $GITHUB_WORKSPACE/data/v2ray-core ${v2ray_path}
+            echo "Upgrade v2ray-core from ${v2ray_repo_ver} to ${v2ray_data_ver}"
+        else
+            echo "V2ray-core no change need to make: ${v2ray_repo_ver}"
+        fi
     fi
 fi
 
