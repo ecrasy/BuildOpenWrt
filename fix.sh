@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-02-22 05:51:09 UTC
+# Modified Time: 2025-02-22 06:01:45 UTC
 #########################################################################
 
 
@@ -59,13 +59,13 @@ echo "Fix python host compile install error!!!"
 
 # Try latest dnsmasq
 tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' $GITHUB_WORKSPACE/data/dnsmasq/Makefile)
-tmp_ver=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
-dnsmasq_data_ver="${tmp_ver##*=}.${tmp_ver##*=}"
+tmp_pkg=$(grep -m1 'PKG_RELEASE:=' $GITHUB_WORKSPACE/data/dnsmasq/Makefile)
+dnsmasq_data_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
 if [ -n "${dnsmasq_data_ver}" ]; then
     dnsmasq_path="package/network/services/dnsmasq"
     tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' ${dnsmasq_path}/Makefile)
-    tmp_ver=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
-    dnsmasq_repo_ver="${tmp_ver##*=}.${tmp_ver##*=}"
+    tmp_pkg=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
+    dnsmasq_repo_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
     cr=$(version_comp "${dnsmasq_repo_ver}" "${dnsmasq_data_ver}")
     if [ "$cr" == "<" ]; then
         rm -rf $dnsmasq_path
@@ -79,13 +79,13 @@ fi
 
 # Try latest golang
 tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
-data_pkg=$(grep -m1 'GO_VERSION_PATCH:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
-golang_data_ver="${tmp_ver##*=}.${data_pkg##*=}"
+tmp_pkg=$(grep -m1 'GO_VERSION_PATCH:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
+golang_data_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
 if [ -n "${golang_data_ver}" ]; then
     golang_path="feeds/packages/lang/golang"
     tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' ${golang_path}/golang/Makefile)
-    repo_pkg=$(grep -m1 'GO_VERSION_PATCH:=' ${golang_path}/golang/Makefile)
-    golang_repo_ver="${tmp_ver##*=}.${repo_pkg##*=}"
+    tmp_pkg=$(grep -m1 'GO_VERSION_PATCH:=' ${golang_path}/golang/Makefile)
+    golang_repo_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
     cr=$(version_comp "${golang_repo_ver}" "${golang_data_ver}")
     if [ "$cr" == "<" ]; then
         rm -rf $golang_path
