@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-02-22 04:37:48 UTC
+# Modified Time: 2025-02-22 05:08:36 UTC
 #########################################################################
 
 
@@ -28,13 +28,11 @@ echo "Fix python host compile install error!!!"
 
 # Try latest dnsmasq
 tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' $GITHUB_WORKSPACE/data/dnsmasq/Makefile)
-tmp_pkg=$(grep -m1 'PKG_RELEASE:=' $GITHUB_WORKSPACE/data/dnsmasq/Makefile)
-dnsmasq_data_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
+dnsmasq_data_ver="${tmp_ver##*=}"
 if [ -n "${dnsmasq_data_ver}" ]; then
     dnsmasq_path="package/network/services/dnsmasq"
     tmp_ver=$(grep -m1 'PKG_UPSTREAM_VERSION:=' ${dnsmasq_path}/Makefile)
-    tmp_pkg=$(grep -m1 'PKG_RELEASE:=' ${dnsmasq_path}/Makefile)
-    dnsmasq_repo_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
+    dnsmasq_repo_ver="${tmp_ver##*=}"
     if [ "${dnsmasq_repo_ver}" != "${dnsmasq_data_ver}" ]; then
         rm -rf $dnsmasq_path
         cp $GITHUB_WORKSPACE/data/etc/ipcalc.sh package/base-files/files/bin/ipcalc.sh
@@ -45,17 +43,25 @@ fi
 
 # Try latest golang
 tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
-tmp_pkg=$(grep -m1 'GO_VERSION_PATCH:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
-golang_data_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
+data_pkg=$(grep -m1 'GO_VERSION_PATCH:=' $GITHUB_WORKSPACE/data/golang/golang/Makefile)
+golang_data_ver="${tmp_ver##*=}"
 if [ -n "${golang_data_ver}" ]; then
     golang_path="feeds/packages/lang/golang"
     tmp_ver=$(grep -m1 'GO_VERSION_MAJOR_MINOR:=' ${golang_path}/golang/Makefile)
-    tmp_pkg=$(grep -m1 'GO_VERSION_PATCH:=' ${golang_path}/golang/Makefile)
-    golang_feeds_ver="${tmp_ver##*=}.${tmp_pkg##*=}"
-    if [ "${golang_feeds_ver}" != "${golang_data_ver}" ]; then
+    repo_pkg=$(grep -m1 'GO_VERSION_PATCH:=' ${golang_path}/golang/Makefile)
+    golang_repo_ver="${tmp_ver##*=}"
+    if [ "${golang_repo_ver}" != "${golang_data_ver}" ]; then
         rm -rf $golang_path
         cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
         echo "Try golang ${golang_data_ver}"
+    else
+        data_pkg="${data_pkg##*=}"
+        repo_pkg="${repo_pkg##*=}"
+        if [ "$data_pkg" -gt "$repo_pkg" ]; then
+            rm -rf $golang_path
+            cp -r $GITHUB_WORKSPACE/data/golang ${golang_path}
+            echo "Upgrade golang to ${golang_data_ver}.${data_pkg}"
+        fi
     fi
 fi
 
