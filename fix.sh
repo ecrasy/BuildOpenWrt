@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-02-22 06:01:45 UTC
+# Modified Time: 2025-04-13 07:06:00 UTC
 #########################################################################
 
 
@@ -98,19 +98,19 @@ fi
 
 # Try latest v2ray-core
 tmp_ver=$(grep -m1 'PKG_VERSION:=' ${GITHUB_WORKSPACE}/data/v2ray-core/Makefile)
-v2ray_data_ver="${tmp_ver##*=}"
-if [ -n "${v2ray_data_ver}" ]; then
+v2ray_core_ver="${tmp_ver##*=}"
+if [ -n "${v2ray_core_ver}" ]; then
     v2ray_path="feeds/packages/net/v2ray-core"
     if [ -d "${v2ray_path}" ]; then
         tmp_ver=$(grep -m1 'PKG_VERSION:=' ${v2ray_path}/Makefile)
-        v2ray_repo_ver="${tmp_ver##*=}"
-        cr=$(version_comp "${v2ray_repo_ver}" "${v2ray_data_ver}")
+        v2ray_core_repo_ver="${tmp_ver##*=}"
+        cr=$(version_comp "${v2ray_core_repo_ver}" "${v2ray_core_ver}")
         if [ "$cr" == "<" ]; then
             rm -rf $v2ray_path
             cp -r $GITHUB_WORKSPACE/data/v2ray-core ${v2ray_path}
-            echo "Upgrade v2ray-core from ${v2ray_repo_ver} to ${v2ray_data_ver}"
+            echo "Upgrade v2ray-core from ${v2ray_core_repo_ver} to ${v2ray_core_ver}"
         else
-            echo "V2ray-core no change need to make: ${v2ray_repo_ver}"
+            echo "v2ray-core no change need to make: ${v2ray_core_repo_ver}"
         fi
     fi
 fi
