@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-04-13 07:06:00 UTC
+# Modified Time: 2025-05-18 11:15:47 UTC
 #########################################################################
 
 
@@ -111,6 +111,25 @@ if [ -n "${v2ray_core_ver}" ]; then
             echo "Upgrade v2ray-core from ${v2ray_core_repo_ver} to ${v2ray_core_ver}"
         else
             echo "v2ray-core no change need to make: ${v2ray_core_repo_ver}"
+        fi
+    fi
+fi
+
+#Try latest v2ray-geodata
+tmp_ver=$(grep -m1 'GEOIP_VER:=' ${GITHUB_WORKSPACE}/data/v2ray-geodata/Makefile)
+v2ray_geodata_ver="${tmp_ver##*=}"
+if [ -n "${v2ray_geodata_ver}" ]; then
+    v2ray_geodata_path="feeds/packages/net/v2ray-geodata"
+    if [ -d "${v2ray_geodata_path}" ]; then
+        tmp_ver=$(grep -m1 'GEOIP_VER:=' ${v2ray_geodata_path}/Makefile)
+        v2ray_geodata_repo_ver="${tmp_ver##*=}"
+        cr=$(version_comp "${v2ray_geodata_repo_ver}" "${v2ray_geodata_ver}")
+        if [ "$cr" == "<" ]; then
+            rm -rf $v2ray_geodata_path
+            cp -r $GITHUB_WORKSPACE/data/v2ray-geodata ${v2ray_geodata_path}
+            echo "Upgrade v2ray-geodata from ${v2ray_geodata_repo_ver} to ${v2ray_geodata_ver}"
+        else
+            echo "v2ray-geodata no change need to make: ${v2ray_geodata_repo_ver}"
         fi
     fi
 fi
