@@ -2,7 +2,7 @@
  # File Name: RPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2025-03-30 09:12:11 UTC
+ # Modified Time: 2025-06-07 21:45:04 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -121,7 +121,7 @@ jobs:
           echo -e "\nCONFIG_ALL=y" >> $OPENWRT_ROOT_PATH/.config
           echo -e "\nCONFIG_ALL_NONSHARED=y" >> $OPENWRT_ROOT_PATH/.config
           cd $OPENWRT_ROOT_PATH
-          sed -i 's/KERNEL_PATCHVER:=6.6/KERNEL_PATCHVER:=5.15/g' target/linux/x86/Makefile
+          sed -i 's/KERNEL_PATCHVER:=6.6/KERNEL_PATCHVER:=5.15/g' target/linux/bcm27xx/Makefile
           make defconfig > /dev/null 2>&1
 
       - name: Generate Variables
@@ -397,7 +397,7 @@ jobs:
           cd $OPENWRT_ROOT_PATH
           ./$FIX_SH
           ./$DIY_SH
-          sed -i 's/KERNEL_PATCHVER:=6.6/KERNEL_PATCHVER:=5.15/g' target/linux/x86/Makefile
+          sed -i 's/KERNEL_PATCHVER:=6.6/KERNEL_PATCHVER:=5.15/g' target/linux/bcm27xx/Makefile
           make defconfig
 
       - name: Download Packages
