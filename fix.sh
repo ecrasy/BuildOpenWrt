@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-05-18 11:15:47 UTC
+# Modified Time: 2025-10-28 21:47:36 UTC
 #########################################################################
 
 
@@ -161,6 +161,29 @@ fi
 # set v2raya depends on v2ray-core
 sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
 echo "set v2raya depends on v2ray-core"
+
+# upgrade libtorrent-rasterbar to latest version
+tmp_ver=$(grep -m1 'PKG_VERSION:=' ${GITHUB_WORKSPACE}/data/app/libtorrent-rasterbar/Makefile)
+ras_ver="${tmp_ver##*=}"
+if [ -n "${ras_ver}" ]; then
+    ras_path="feeds/packages/libs/libtorrent-rasterbar"
+    if [ -d "${ras_path}" ]; then
+        tmp_ver=$(grep -m1 'PKG_VERSION:=' ${ras_path}/Makefile)
+        ras_repo_ver="${tmp_ver##*=}"
+        cr=$(version_comp "${ras_repo_ver}" "${ras_ver}")
+        if [ "$cr" == "<" ]; then
+            rm -rf ${ras_path}
+            cp -r $GITHUB_WORKSPACE/data/app/libtorrent-rasterbar feeds/packages/libs/
+            echo "Upgrade libtorrent-rasterbar from ${ras_repo_ver} to ${ras_ver}"
+        else
+            echo "libtorrent-rasterbar no change need make: ${ras_repo_ver}"
+        fi
+    else
+            rm -rf ${ras_path}
+            cp -r $GITHUB_WORKSPACE/data/app/libtorrent-rasterbar feeds/packages/libs/
+            echo "Add libtorrent-rasterbar ${ras_ver} to repo"
+    fi
+fi
 
 # replace miniupnp with official openwrt feeds packages
 upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
