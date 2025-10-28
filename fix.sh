@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2025-10-28 21:47:36 UTC
+# Modified Time: 2025-10-28 22:00:12 UTC
 #########################################################################
 
 
@@ -183,6 +183,13 @@ if [ -n "${ras_ver}" ]; then
             cp -r $GITHUB_WORKSPACE/data/app/libtorrent-rasterbar feeds/packages/libs/
             echo "Add libtorrent-rasterbar ${ras_ver} to repo"
     fi
+fi
+
+if [ -d "${GITHUB_WORKSPACE}/data/app/hwinfo" ]; then
+    hwinfo_path=feeds/packages/utils/hwinfo
+    rm -rf ${hwinfo_path}
+    cp -r $GITHUB_WORKSPACE/data/app/hwinfo feeds/packages/utils/
+    echo "Try hwinfo from openwrt official repo"
 fi
 
 # replace miniupnp with official openwrt feeds packages
