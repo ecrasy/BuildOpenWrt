@@ -7,7 +7,7 @@
 
 include $(TOPDIR)/rules.mk
 
-GO_VERSION_MAJOR_MINOR:=1.24
+GO_VERSION_MAJOR_MINOR:=1.25
 GO_VERSION_PATCH:=3
 
 PKG_NAME:=golang
@@ -20,7 +20,7 @@ GO_SOURCE_URLS:=https://dl.google.com/go/ \
 
 PKG_SOURCE:=go$(PKG_VERSION).src.tar.gz
 PKG_SOURCE_URL:=$(GO_SOURCE_URLS)
-PKG_HASH:=229c08b600b1446798109fae1f569228102c8473caba8104b6418cb5bc032878
+PKG_HASH:=a81a4ba593d0015e10c51e267de3ff07c7ac914dfca037d9517d029517097795
 
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -292,6 +292,7 @@ endef
 define Host/Compile
 	$(call GoCompiler/Bootstrap/Make, \
 		$(HOST_GO_VARS) \
+		CC="$(HOSTCC_NOCACHE) -std=gnu17" \
 	)
 
 	$(call GoCompiler/Bootstrap-1.17/Make, \
