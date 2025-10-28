@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2025-10-28 02:54:12 UTC
+ # Modified Time: 2025-10-28 08:07:54 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -53,7 +53,7 @@ env:
 
 jobs:
   Toolchain:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     outputs:
       OPENWRT_ROOT_PATH: ${{ steps.clone.outputs.OPENWRT_ROOT_PATH }}
@@ -258,7 +258,7 @@ jobs:
 
   Build:
     needs: [Toolchain]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Combine Disks
@@ -461,7 +461,7 @@ jobs:
 
   Upload:
     needs: [Build, Toolchain]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Restore Variables
