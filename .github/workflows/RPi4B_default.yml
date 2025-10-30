@@ -2,7 +2,7 @@
  # File Name: RPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2025-10-28 23:16:57 UTC
+ # Modified Time: 2025-10-30 13:23:45 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -74,7 +74,7 @@ jobs:
           git config --global advice.detachedHead false
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -202,7 +202,7 @@ jobs:
 
       - name: Upload Toolchain Image To Artifact
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: output
@@ -338,7 +338,7 @@ jobs:
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: workspace
@@ -453,7 +453,7 @@ jobs:
           echo -e "============================\n"
 
       - name: Upload Bin Archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}/${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}.zip
@@ -478,7 +478,7 @@ jobs:
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -506,7 +506,7 @@ jobs:
           mkdir workspace
 
       - name: Download Bin Archive
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}
