@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2025-10-30 13:23:31 UTC
+ # Modified Time: 2026-06-30 01:52:01 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -35,7 +35,7 @@ on:
   # types: [started]
 
 env:
-  SOURCE_URL: https://github.com/ecrasy/lede-openwrt
+  SOURCE_URL: https://github.com/coolsnowwolf/lede.git
   SOURCE_BRANCH: master
   CLONE_DEPTH: 200
   CONFIG_FILE: configs/x86_64.config
@@ -74,9 +74,15 @@ jobs:
           git config --global advice.detachedHead false
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+          cache: false
 
       - name: Free Up Disk Space
         env:
@@ -202,7 +208,7 @@ jobs:
 
       - name: Upload Toolchain Image To Artifact
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true' && steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: output
@@ -313,6 +319,12 @@ jobs:
           git fetch --depth 1 origin $GITHUB_REF
           git checkout -t origin/$CURRENT_BRANCH
 
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+          cache: false
+
       - name: Free Up Disk Space
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -338,7 +350,7 @@ jobs:
 
       - name: Download Toolchain Image From Artifacts
         if: env.TOOLCHAIN_RELEASE_UPLOAD != 'true'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: ${{ env.TOOLCHAIN_IMAGE }}
           path: workspace
@@ -452,7 +464,7 @@ jobs:
           echo -e "============================\n"
 
       - name: Upload Bin Archive
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}/${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}.zip
@@ -477,9 +489,15 @@ jobs:
           echo "BUILD_DATE=$(echo '${{needs.Toolchain.outputs.BUILD_DATE}}')" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.x'
+          cache: false
 
       - name: Free Up Disk Space
         env:
@@ -505,7 +523,7 @@ jobs:
           mkdir workspace
 
       - name: Download Bin Archive
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: bin-archive
           path: ${{ env.OPENWRT_ROOT_PATH }}
