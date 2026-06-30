@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-23 13:04:43 UTC
-# Modified Time: 2025-01-23 04:13:15 UTC
+# Modified Time: 2026-06-30 01:39:53 UTC
 #########################################################################
 
 #!/bin/bash
@@ -21,7 +21,7 @@ echo "src-git PWluci https://github.com/ecrasy/openwrt-passwall.git;luci" >> fee
 
 # passwall2
 echo "Adding xiaorouji Passwall2"
-echo "src-git Passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main" >> feeds.conf.default
+echo "src-git Passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main" >> feeds.conf.default
 
 # ssrp
 echo "Adding ShadowSocksR Plus"
