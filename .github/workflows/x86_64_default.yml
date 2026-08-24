@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2026-08-24 07:50:44 UTC
+ # Modified Time: 2026-08-24 13:16:11 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -431,7 +431,7 @@ jobs:
         id: generate
         run: |
           cd $OPENWRT_ROOT_PATH
-          make package/install -j$(nproc)
+          make package/install -j$(nproc) || make package/install -j1 V=s
           make target/install -j$(nproc)
           make json_overview_image_info
           make checksum

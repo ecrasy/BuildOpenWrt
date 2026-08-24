@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-08-24 09:57:30 UTC
+# Modified Time: 2026-08-24 13:24:02 UTC
 #########################################################################
 
 
@@ -231,6 +231,13 @@ else
     mkdir -p $(dirname $dockerd_path)
     cp $GITHUB_WORKSPACE/data/patches/dockerd.patch $dockerd_path
     echo "Fix dockerd nested copy error"
+fi
+
+ps_path="feeds/luci/applications/luci-app-passwall"
+if [ -d ${ps_path} ]; then
+    rm -rf $ps_path
+    cp -r feeds/PWluci/luci-app-passwall $ps_path
+    echo "Replace builtin passwall with v2ray-core support version"
 fi
 
 echo -e "Fixing Jobs Completed!!!\n"

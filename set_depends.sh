@@ -4,7 +4,7 @@
 # Description: feel free to use
 # Description: run this script once before make menuconfig
 # Created Time: 2022-12-18 14:15:22 UTC
-# Modified Time: 2026-08-24 04:35:14 UTC
+# Modified Time: 2026-08-24 13:24:14 UTC
 #########################################################################
 
 #!/bin/bash
@@ -91,6 +91,13 @@ do
         echo -e "operation v2raya success:\n${fr:0:50}\n"
     else
         echo -e "operation v2raya fail\n"
+    fi
+
+    ps_path="feeds/luci/applications/luci-app-passwall"
+    if [ -d ${ps_path} ]; then
+        rm -rf $ps_path
+        cp -r feeds/PWluci/luci-app-passwall $ps_path
+        echo "Replace builtin passwall with v2ray-core support version"
     fi
 
     echo "Fix $openwrt_dir completed!!!"
