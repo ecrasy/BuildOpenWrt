@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-08-24 04:14:30 UTC
+# Modified Time: 2026-08-24 07:39:25 UTC
 #########################################################################
 
 
@@ -213,12 +213,10 @@ if [ -d "${GITHUB_WORKSPACE}/data/app/hwinfo" ]; then
 fi
 
 # replace miniupnp with official openwrt feeds packages
-upnp_ver=$(grep -m1 'PKG_VERSION:=2.0.20170421' feeds/packages/net/miniupnpd/Makefile)
-if [ -n "${upnp_ver}" ]; then
-    rm -rf feeds/packages/net/miniupnpd
-    rm -rf feeds/packages/net/miniupnpc
-    cp -r $GITHUB_WORKSPACE/data/app/miniupnpd feeds/packages/net/
-    cp -r $GITHUB_WORKSPACE/data/app/miniupnpc feeds/packages/net/
+upnp_path="feeds/packages/net/miniupnpd-iptables"
+if [ -d "${upnp_path}" ]; then
+    rm -rf feeds/packages/net/miniupnp*
+    cp -r $GITHUB_WORKSPACE/data/app/miniupnp* feeds/packages/net/
     echo "Replace miniupnp with official openwrt feeds packages"
 fi
 
