@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-06-30 01:21:16 UTC
+# Modified Time: 2026-08-24 04:11:06 UTC
 #########################################################################
 
 
@@ -42,15 +42,15 @@ version_comp () {
 
 # fix error from https://github.com/openwrt/luci/issues/5373
 # luci-app-statistics: misconfiguration shipped pointing to non-existent directory
-str="^[^#]*option Include '/etc/collectd/conf.d'"
-cmd="s@$str@#&@"
-sed -ri "$cmd" feeds/luci/applications/luci-app-statistics/root/etc/config/luci_statistics
-echo "Fix luci-app-statistics ref wrong path error"
+# str="^[^#]*option Include '/etc/collectd/conf.d'"
+# cmd="s@$str@#&@"
+# sed -ri "$cmd" feeds/luci/applications/luci-app-statistics/root/etc/config/luci_statistics
+# echo "Fix luci-app-statistics ref wrong path error"
 
 # fix stupid coremark benchmark error
-touch package/base-files/files/etc/bench.log
-chmod 0666 package/base-files/files/etc/bench.log
-echo "Touch coremark log file to fix uhttpd error!!!"
+# touch package/base-files/files/etc/bench.log
+# chmod 0666 package/base-files/files/etc/bench.log
+# echo "Touch coremark log file to fix uhttpd error!!!"
 
 # fix python3.9.12 sys version parse error
 # python3_path="feeds/packages/lang/python/python3"
@@ -158,11 +158,15 @@ if [ -f ${cshark_path} ]; then
 fi
 
 # remove hnetd depends on odhcpd*
-hnetd_path="feeds/routing/hnetd/Makefile"
-if [ -f ${hnetd_path} ]; then
-    sed -i "s/+odhcpd//g" ${hnetd_path}
-    echo "Remove hnetd depends on odhcpd*"
-fi
+# hnetd_path="feeds/routing/hnetd/Makefile"
+# if [ -f ${hnetd_path} ]; then
+#     sed -i "s/+odhcpd//g" ${hnetd_path}
+#     echo "Remove hnetd depends on odhcpd*"
+# fi
+
+# remove ipv6-helper depends on odhcpd*
+# sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
+# echo "Remove ipv6-helper depends on odhcpd*"
 
 # make shairplay depends on mdnsd not libavahi-compat-libdnssd
 shairplay_path=feeds/packages/sound/shairplay/Makefile
@@ -170,10 +174,6 @@ if [ -f ${shairplay_path} ]; then
     sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" ${shairplay_path}
     echo "Set shairplay depends on mdnsd not libavahi-compat-libdnssd"
 fi
-
-# remove ipv6-helper depends on odhcpd*
-sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
-echo "Remove ipv6-helper depends on odhcpd*"
 
 # set v2raya depends on v2ray-core
 sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
