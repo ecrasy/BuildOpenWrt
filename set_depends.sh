@@ -4,7 +4,7 @@
 # Description: feel free to use
 # Description: run this script once before make menuconfig
 # Created Time: 2022-12-18 14:15:22 UTC
-# Modified Time: 2023-10-11 03:01:21 UTC
+# Modified Time: 2026-08-24 04:35:14 UTC
 #########################################################################
 
 #!/bin/bash
@@ -43,25 +43,25 @@ do
         echo -e "operation fail\n"
     fi
 
-    # remove ipv6-helper depends on odhcpd*
-    sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
-    echo "Remove ipv6-helper depends on odhcpd*"
-    fr=$(grep -m1 "odhcpd" package/lean/ipv6-helper/Makefile)
-    if [ -z "$fr" ]; then
-        echo -e "operation success\n"
-    else
-        echo -e "operation fail:\n${fr:0:50}\n"
-    fi
+   # remove ipv6-helper depends on odhcpd*
+   # sed -i "s/+odhcpd-ipv6only//g" package/lean/ipv6-helper/Makefile
+   # echo "Remove ipv6-helper depends on odhcpd*"
+   # fr=$(grep -m1 "odhcpd" package/lean/ipv6-helper/Makefile)
+   # if [ -z "$fr" ]; then
+   #     echo -e "operation success\n"
+   # else
+   #     echo -e "operation fail:\n${fr:0:50}\n"
+   # fi
 
-    # remove hnetd depends on odhcpd*
-    sed -i "s/+odhcpd//g" feeds/routing/hnetd/Makefile
-    echo "Remove hnetd depends on odhcpd*"
-    fr=$(grep -m1 "odhcpd" feeds/routing/hnetd/Makefile)
-    if [ -z "$fr" ]; then
-        echo -e "operation success\n"
-    else
-        echo -e "operation fail:\n${fr:0:50}\n"
-    fi
+   # remove hnetd depends on odhcpd*
+   # sed -i "s/+odhcpd//g" feeds/routing/hnetd/Makefile
+   # echo "Remove hnetd depends on odhcpd*"
+   # fr=$(grep -m1 "odhcpd" feeds/routing/hnetd/Makefile)
+   # if [ -z "$fr" ]; then
+   #     echo -e "operation success\n"
+   # else
+   #     echo -e "operation fail:\n${fr:0:50}\n"
+   # fi
 
     # set shairplay depends on mdnsd
     sed -i "s/+libavahi-compat-libdnssd/+mdnsd/g" feeds/packages/sound/shairplay/Makefile
