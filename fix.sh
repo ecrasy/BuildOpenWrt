@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-08-24 07:39:25 UTC
+# Modified Time: 2026-08-24 09:57:30 UTC
 #########################################################################
 
 
@@ -213,12 +213,12 @@ if [ -d "${GITHUB_WORKSPACE}/data/app/hwinfo" ]; then
 fi
 
 # replace miniupnp with official openwrt feeds packages
-upnp_path="feeds/packages/net/miniupnpd-iptables"
-if [ -d "${upnp_path}" ]; then
-    rm -rf feeds/packages/net/miniupnp*
-    cp -r $GITHUB_WORKSPACE/data/app/miniupnp* feeds/packages/net/
-    echo "Replace miniupnp with official openwrt feeds packages"
-fi
+# upnp_path="feeds/packages/net/miniupnpd-iptables"
+# if [ -d "${upnp_path}" ]; then
+#     rm -rf feeds/packages/net/miniupnp*
+#     cp -r $GITHUB_WORKSPACE/data/app/miniupnp* feeds/packages/net/
+#     echo "Replace miniupnp with official openwrt feeds packages"
+# fi
 
 # make luci-app-firewall depends on uci-firewall not firewall
 sed -i 's/+firewall/+uci-firewall/g' feeds/luci/applications/luci-app-firewall/Makefile
