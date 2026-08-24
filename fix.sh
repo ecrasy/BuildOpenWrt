@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-08-24 13:24:02 UTC
+# Modified Time: 2026-08-24 13:37:28 UTC
 #########################################################################
 
 
@@ -177,6 +177,7 @@ fi
 
 # set v2raya depends on v2ray-core
 sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
+sed -i "s/xray-core/v2ray-core/g" feeds/packages/net/v2raya/Makefile
 echo "set v2raya depends on v2ray-core"
 
 # upgrade libtorrent-rasterbar to latest version

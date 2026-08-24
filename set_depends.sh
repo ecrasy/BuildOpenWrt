@@ -4,7 +4,7 @@
 # Description: feel free to use
 # Description: run this script once before make menuconfig
 # Created Time: 2022-12-18 14:15:22 UTC
-# Modified Time: 2026-08-24 13:24:14 UTC
+# Modified Time: 2026-08-24 13:36:12 UTC
 #########################################################################
 
 #!/bin/bash
@@ -85,6 +85,7 @@ do
 
     # set v2raya depends on v2ray-core
     sed -i "s/xray-core/v2ray-core/g" feeds/CustomPkgs/net/v2raya/Makefile
+    sed -i "s/xray-core/v2ray-core/g" feeds/packages/net/v2raya/Makefile
     echo "set v2raya depends on v2ray-core"
     fr=$(grep -m1 "v2ray-core" feeds/CustomPkgs/net/v2raya/Makefile)
     if [ ! -z "$fr" ]; then
