@@ -3,7 +3,7 @@
 # Author: Carbon (ecrasy@gmail.com)
 # Description: feel free to use
 # Created Time: 2022-07-30 04:57:44 UTC
-# Modified Time: 2026-08-24 04:11:06 UTC
+# Modified Time: 2026-08-24 04:14:30 UTC
 #########################################################################
 
 
@@ -225,6 +225,15 @@ fi
 # make luci-app-firewall depends on uci-firewall not firewall
 sed -i 's/+firewall/+uci-firewall/g' feeds/luci/applications/luci-app-firewall/Makefile
 echo "Set luci-app-firewall depends on uci-firewall not firewall"
+
+dockerd_path="feeds/packages/utils/dockerd/patches/001-skip-copy-nested-binaries.patch"
+if [ -f ${dockerd_path} ]; then
+    echo "dockerd patch already exists"
+else
+    mkdir -p $(dirname $dockerd_path)
+    cp $GITHUB_WORKSPACE/data/patches/dockerd.patch $dockerd_path
+    echo "Fix dockerd nested copy error"
+fi
 
 echo -e "Fixing Jobs Completed!!!\n"
 
