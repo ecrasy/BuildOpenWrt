@@ -2,7 +2,7 @@
  # File Name: x86_64_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:39:29 UTC
- # Modified Time: 2026-06-30 01:52:01 UTC
+ # Modified Time: 2026-08-24 07:50:44 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -37,7 +37,7 @@ on:
 env:
   SOURCE_URL: https://github.com/coolsnowwolf/lede.git
   SOURCE_BRANCH: master
-  CLONE_DEPTH: 200
+  CLONE_DEPTH: 500
   CONFIG_FILE: configs/x86_64.config
   DIY_SH: diy.sh
   FIX_SH: fix.sh
