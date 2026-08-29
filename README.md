@@ -57,11 +57,9 @@ SmartDNS,FakeDNS,ChinaDNS-NG,Turbo-ACC等组件建议勿选
 3. fix.sh: 修正某些软件包package的编译错误。  
 
 ## Release固件发布
-1. Firmware-x86-64-Kmod：预配置本地kmod软件源的x86-64固件。  
-2. Firmware-x86-64：不使用本地kmod软件源的x86-64固件。  
-3. Firmware-bcm2711-Kmod：预配置本地kmod软件源的树莓派4B固件。  
-4. Firmware-bcm2711：不使用本地kmod软件源的树莓派4B固件。  
-5. Toolchain-image：编译工具链，方便workflow一次编译多次使用。  
+1. Firmware-x86-64：不使用本地kmod软件源的x86-64固件。  
+2. Firmware-bcm2711：不使用本地kmod软件源的树莓派4B固件。  
+3. Toolchain-image：编译工具链，方便workflow一次编译多次使用。  
 
 ## 网络和代理 设置说明
 1. 个人感觉Passwall比Passwall2和SSR+都好用。    
