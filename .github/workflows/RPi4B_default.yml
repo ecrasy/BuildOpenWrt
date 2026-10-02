@@ -2,7 +2,7 @@
  # File Name: RPi4B_default.yml
  # Author: Carbon (ecrasy@gmail.com)
  # Created Time: 2022-07-16 15:23:37 UTC
- # Modified Time: 2026-08-24 07:50:49 UTC
+ # Modified Time: 2026-10-02 09:27:43 UTC
  # Description: Thanks to bigbugcc @ https://github.com/bigbugcc/OpenWrts
  # Description: Thanks to P3TERX @ https://github.com/P3TERX/Actions-OpenWrt
  # Description: Thanks to SuLingGG @ https://github.com/SuLingGG/OpenWrt-Rpi
@@ -417,13 +417,19 @@ jobs:
           make download -j8
           df -hT
 
+      - name: Compile Target
+        run: |
+          cd $OPENWRT_ROOT_PATH
+          echo "$(nproc) threads compile target"
+          make buildinfo
+          make diffconfig buildversion feedsversion
+          make target/compile -j$(nproc) IGNORE_ERRORS="m n"
+          make package/feeds/luci/luci-app-qbittorrent/compile -j$(nproc)
+
       - name: Compile Packages
         run: |
           cd $OPENWRT_ROOT_PATH
           echo "$(nproc) threads compile packages"
-          make buildinfo
-          make diffconfig buildversion feedsversion
-          make target/compile -j$(nproc) IGNORE_ERRORS="m n"
           make package/compile -j$(nproc) IGNORE_ERRORS="m n"
           make package/index
 
